@@ -5,16 +5,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.game.R;
 import com.example.game.models.Usuario;
+
 import java.util.List;
 
 public class UsuarioAdapter extends RecyclerView.Adapter<UsuarioViewHolder> {
 
     private List<Usuario> usuarios;
+    private OnUsuarioClickListener listener;
 
-    public UsuarioAdapter(List<Usuario> usuarios) {
+    public interface OnUsuarioClickListener {
+        void onEditarClick(Usuario usuario);
+        void onExcluirClick(Usuario usuario);
+    }
+
+    public UsuarioAdapter(List<Usuario> usuarios, OnUsuarioClickListener listener) {
         this.usuarios = usuarios;
+        this.listener = listener;
     }
 
     @NonNull
@@ -29,6 +38,9 @@ public class UsuarioAdapter extends RecyclerView.Adapter<UsuarioViewHolder> {
         Usuario usuario = usuarios.get(position);
         holder.txtNome.setText(usuario.getNome());
         holder.txtEmail.setText(usuario.getEmail());
+
+        holder.btnEditar.setOnClickListener(v -> listener.onEditarClick(usuario));
+        holder.btnExcluir.setOnClickListener(v -> listener.onExcluirClick(usuario));
     }
 
     @Override
