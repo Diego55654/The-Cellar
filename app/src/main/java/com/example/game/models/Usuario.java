@@ -1,14 +1,11 @@
 package com.example.game.models;
 
-import androidx.room.ColumnInfo;
-import androidx.room.Dao;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
+import androidx.room.*;
 
 import com.example.game.utils.SenhaUtils;
 
 import java.util.regex.Pattern;
-@Dao
+
 @Entity(tableName = "usuarios")
 public class Usuario {
     @PrimaryKey(autoGenerate = true)
@@ -34,7 +31,7 @@ public class Usuario {
     }
 
     public String getEmail() {
-        return nome;
+        return email;
     }
 
     public void setEmail(String email) {
