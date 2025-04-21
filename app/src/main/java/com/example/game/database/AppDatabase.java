@@ -1,13 +1,11 @@
-package com.example.jogo2.database;
+package com.example.game.database;
 
 import android.content.Context;
 
-import androidx.room.Database;
-import androidx.room.Room;
-import androidx.room.RoomDatabase;
+import androidx.room.*;
 
-import com.example.jogo2.models.Usuario;
-import com.example.jogo2.ui.interfaces.UsuarioDAO;
+import com.example.game.models.Usuario;
+import com.example.game.ui.interfaces.UsuarioDAO;
 
 @Database(entities = {Usuario.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
