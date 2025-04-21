@@ -1,8 +1,8 @@
-package com.example.jogo2.ui.interfaces;
+package com.example.game.ui.interfaces;
 
 import androidx.room.*;
 
-import com.example.jogo2.models.Usuario;
+import com.example.game.models.Usuario;
 
 import java.util.List;
 
