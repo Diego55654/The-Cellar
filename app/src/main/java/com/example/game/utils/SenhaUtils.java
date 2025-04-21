@@ -15,41 +15,43 @@ public class SenhaUtils {
     private static final int KEY_LENGTH = 256;
     private static final String ALGORITHM = "PBKDF2WithHmacSHA256";
 
+    // Codifica array de bytes para Base64
+    private static String encodeToBase64(byte[] input) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return java.util.Base64.getEncoder().encodeToString(input);
+        } else {
+            return Base64.encodeToString(input, Base64.NO_WRAP);
+        }
+    }
+
     // Gera um salt aleatório
     private static String generateSalt() {
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[16];
         random.nextBytes(salt);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            return Base64.getEncoder().encodeToString(salt);
-        }
-        return "";
+        return encodeToBase64(salt);
     }
 
-    // Gera o hash da senha usando PBKDF2
+    // Gera o hash da senha
     public static String hashPassword(String password, String salt) {
         try {
             PBEKeySpec spec = new PBEKeySpec(password.toCharArray(), salt.getBytes(), ITERATIONS, KEY_LENGTH);
             SecretKeyFactory factory = SecretKeyFactory.getInstance(ALGORITHM);
             byte[] hash = factory.generateSecret(spec).getEncoded();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                return Base64.getEncoder().encodeToString(hash);
-            }
+            return encodeToBase64(hash);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new RuntimeException("Erro ao gerar hash da senha", e);
         }
-
-        return password;
     }
 
-    // Método para criar um hash de senha junto com o salt
+    // Gera senha segura com salt
     public static String generateSecurePassword(String password) {
         String salt = generateSalt();
         String hashedPassword = hashPassword(password, salt);
-        return salt + ":" + hashedPassword;  // Armazena salt e hash juntos
+        return salt + ":" + hashedPassword;
     }
 
-    // Método para verificar a senha digitada
+    // Verifica se a senha digitada corresponde à armazenada
     public static boolean verifyPassword(String inputPassword, String storedPassword) {
         String[] parts = storedPassword.split(":");
         if (parts.length != 2) {
@@ -57,6 +59,6 @@ public class SenhaUtils {
         }
         String salt = parts[0];
         String hashOfInput = hashPassword(inputPassword, salt);
-        return hashOfInput.equals(parts[1]);  // Compara hash armazenado com hash da entrada
+        return hashOfInput.equals(parts[1]);
     }
 }
