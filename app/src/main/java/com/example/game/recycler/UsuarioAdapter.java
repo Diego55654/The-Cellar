@@ -29,8 +29,9 @@ public class UsuarioAdapter extends RecyclerView.Adapter<UsuarioViewHolder> {
     @NonNull
     @Override
     public UsuarioViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        //Infla o XML que representa um usuario
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_usuario, parent, false);
-        return new UsuarioViewHolder(view);
+        return new UsuarioViewHolder(view); 
     }
 
     @Override
