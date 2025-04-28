@@ -11,20 +11,27 @@ import javax.crypto.spec.PBEKeySpec;
 
 public class SenhaUtils {
 
-    private static final int ITERATIONS = 10000;
-    private static final int KEY_LENGTH = 256;
+
+    // Número de interações que o hash faz com o código
+    private static final int ITERATIONS = 10000; 
+
+    // 256bits usado
+    private static final int KEY_LENGTH = 256; 
+
+    // Algoritmo usado: PBKDF2
     private static final String ALGORITHM = "PBKDF2WithHmacSHA256";
 
     // Codifica array de bytes para Base64
     private static String encodeToBase64(byte[] input) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        // nao haver conflito de versão
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) { 
             return java.util.Base64.getEncoder().encodeToString(input);
         } else {
             return Base64.encodeToString(input, Base64.NO_WRAP);
         }
     }
 
-    // Gera um salt aleatório
+    // Gera um salt (dificulta o acesso da senha) aleatório
     private static String generateSalt() {
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[16];
@@ -32,7 +39,7 @@ public class SenhaUtils {
         return encodeToBase64(salt);
     }
 
-    // Gera o hash da senha
+    // Gera o hash (mistura senha normal + o salt)
     public static String hashPassword(String password, String salt) {
         try {
             PBEKeySpec spec = new PBEKeySpec(password.toCharArray(), salt.getBytes(), ITERATIONS, KEY_LENGTH);
