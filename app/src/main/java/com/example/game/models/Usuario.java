@@ -4,6 +4,7 @@ import androidx.room.*;
 
 import com.example.game.utils.SenhaUtils;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 @Entity(tableName = "usuarios")
@@ -24,11 +25,18 @@ public class Usuario {
 
     private static final Pattern PATTERN = Pattern.compile(PASSWORD_REGEX);
 
+    //Construtor da classe com validação de campos null
     public Usuario(String nome, String senha, String email) {
-        this.email = email;
-        this.nome = nome;
-        this.senha = senha;
+
+        this.nome = Objects.requireNonNull(nome, "O campo nome não pode ser nulo");
+        this.senha = Objects.requireNonNull(senha, "O campo senha não pode ser nulo");
+        this.email = Objects.requireNonNull(email, "O campo email não pode ser nulo");
+
+        if (nome.isEmpty() || senha.isEmpty() || email.isEmpty()) {
+            throw new IllegalArgumentException("Nenhum dos campos pode estar vazio.");
+        }
     }
+
 
     public String getEmail() {
         return email;
@@ -74,6 +82,4 @@ public class Usuario {
     public boolean verifyPassword(String senhaDigitada) {
         return SenhaUtils.verifyPassword(senhaDigitada, this.senha);
     }
-
-
 }

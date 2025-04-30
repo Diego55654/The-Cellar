@@ -13,6 +13,16 @@
         android:textSize="18sp"
         android:layout_marginTop="20dp"/>
 
+    <!-->A principio este botão será responsável por redirecionar o usuário ao jogo que funcionará no navegador <!-->
+
+    <Button
+        android:id="@+id/btnEntrar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="#dd7787"
+        android:text="Iniciar o game" />
+
     <Button
         android:id="@+id/btnSair"
         android:layout_width="match_parent"

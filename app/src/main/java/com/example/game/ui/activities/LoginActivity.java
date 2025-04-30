@@ -5,9 +5,9 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.room.*;
+import androidx.room.Room;
 
-import com.example..game.database.AppDatabase;
+import com.example.game.database.AppDatabase;
 import com.example.game.databinding.ActivityLoginBinding;
 import com.example.game.ui.interfaces.UsuarioDAO;
 import com.example.game.models.Usuario;
@@ -28,9 +28,9 @@ public class LoginActivity extends AppCompatActivity {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Inicializa o banco de dados
+        // Inicializa o banco de dados permitindo queries na thread principal
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "app-db")
-                .allowMainThreadQueries() // ⚠️ Apenas para testes!
+                .allowMainThreadQueries() // ⚠️ Apenas para testes, não recomendado para produção
                 .build();
         usuarioDAO = db.usuarioDao();
 
@@ -46,12 +46,7 @@ public class LoginActivity extends AppCompatActivity {
         String email = binding.etEmail.getText().toString().trim();
         String senha = binding.etSenha.getText().toString().trim();
 
-        if (email.isEmpty() || senha.isEmpty()) {
-            Toast.makeText(this, "Por favor, preencha todos os campos!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Verifica credenciais do administrador
+        // Verifica as credenciais do administrador
         if (email.equals(ADMIN_EMAIL) && senha.equals(ADMIN_PASS)) {
             Toast.makeText(this, "Login como administrador!", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, AdminActivity.class));
@@ -59,19 +54,19 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // Verifica se o usuário existe no banco de dados
-        Usuario usuario = usuarioDAO.getUsuarioByEmail(email);
+        // Executa a consulta numa Thread separada
+        new Thread(() -> {
+            Usuario usuario = usuarioDAO.getUsuarioByEmail(email);
 
-        if (usuario != null && SenhaUtils.verifyPassword(senha, usuario.getSenha())) {
-            Toast.makeText(this, "Login bem-sucedido!", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this, MainActivity.class)); // troque para sua tela principal
-            finish();
-        } else {
-            Toast.makeText(this, "Usuário ou senha incorretos!", Toast.LENGTH_SHORT).show();
-        }
+            runOnUiThread(() -> {
+                if (usuario != null && SenhaUtils.verifyPassword(senha, usuario.getSenha())) {
+                    Toast.makeText(LoginActivity.this, "Login bem-sucedido!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    finish();
+                } else {
+                    Toast.makeText(LoginActivity.this, "Usuário ou senha incorretos!", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }).start();
     }
 }
-
-
-
-

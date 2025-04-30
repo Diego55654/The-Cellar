@@ -10,7 +10,7 @@ import com.example.game.ui.interfaces.UsuarioDAO;
 @Database(entities = {Usuario.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
-    private static AppDatabase INSTANCE;
+    private static volatile AppDatabase INSTANCE;
 
     public abstract UsuarioDAO usuarioDao(); // DAO
 
@@ -24,8 +24,6 @@ public abstract class AppDatabase extends RoomDatabase {
                                     AppDatabase.class,
                                     "app_db"
                             )
-                            .allowMainThreadQueries() // pode ser removido e usar async (Thread/LiveData)
-                            .fallbackToDestructiveMigration()
                             .build();
                 }
             }
