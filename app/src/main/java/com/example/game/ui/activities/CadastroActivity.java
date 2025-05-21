@@ -2,17 +2,25 @@ package com.example.game.ui.activities;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.game.database.AppDatabase;
 import com.example.game.databinding.ActivityCadastroBinding;
+import com.example.game.models.Usuario;
 import com.example.game.utils.SenhaUtils;
+
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class CadastroActivity extends AppCompatActivity {
 
     private ActivityCadastroBinding binding;
+    private AppDatabase db;
+    private final Executor executor = Executors.newSingleThreadExecutor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +29,9 @@ public class CadastroActivity extends AppCompatActivity {
         // Inflando o layout com View Binding
         binding = ActivityCadastroBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        // Inicializar banco de dados
+        db = AppDatabase.getDatabase(this);
 
         // Ação do botão de cadastro com validações
         binding.btnCadastrar.setOnClickListener(view -> validarCadastro());
@@ -34,23 +45,20 @@ public class CadastroActivity extends AppCompatActivity {
         // Inicialmente, desabilita o botão para evitar cliques repetidos
         binding.btnCadastrar.setEnabled(false);
 
-        // Validação de campos vazios
-        if (email.isEmpty() || senha.isEmpty() || nome.isEmpty()) {
-            exibirErro("Por favor, preencha todos os campos!");
-            return;
-        }
 
-        // Valida requisitos da senha (ex.: mínimo de 6 caracteres)
-        if (senha.length() < 6) {
-            exibirErro("A senha deve ter pelo menos 6 caracteres!");
-            return;
-        }
+        // Cria o objeto Usuario e salva no banco
+        String senhaCriptografada = SenhaUtils.generateSecurePassword(senha);
+        Usuario novoUsuario = new Usuario(nome, email, senhaCriptografada);
 
-        // Senha segura
-        SenhaUtils.generateSecurePassword(senha);
-
-        // Exibe mensagem de sucesso
-        exibirSucesso();
+        // Salvar no banco de dados em uma thread separada
+        executor.execute(() -> {
+            try {
+                db.usuarioDao().inserir(novoUsuario);
+                runOnUiThread(this::exibirSucesso);
+            } catch (Exception e) {
+                runOnUiThread(() -> exibirErro("Erro ao cadastrar: " + e.getMessage()));
+            }
+        });
     }
 
     //Funcao para mostrar que algo deu errado
