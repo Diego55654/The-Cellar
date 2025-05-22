@@ -40,6 +40,10 @@ public class SenhaUtils {
 
     // Gera o hash (mistura senha normal + o salt)
     public static String hashPassword(String password, String salt) {
+        if (password == null || password.trim().isEmpty()) {
+            throw new IllegalArgumentException("Senha não pode estar vazia");
+        }
+
         try {
             PBEKeySpec spec = new PBEKeySpec(password.toCharArray(), salt.getBytes(), ITERATIONS, KEY_LENGTH);
             SecretKeyFactory factory = SecretKeyFactory.getInstance(ALGORITHM);
@@ -49,6 +53,7 @@ public class SenhaUtils {
             throw new RuntimeException("Erro ao gerar hash da senha", e);
         }
     }
+
 
     // Gera senha segura com salt
     public static String generateSecurePassword(String password) {

@@ -2,6 +2,7 @@ package com.example.game.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -62,12 +63,12 @@ public class LoginActivity extends AppCompatActivity {
             final Usuario usuario = usuarioDAO.getUsuarioByEmail(email);
 
             runOnUiThread(() -> {
-                // Ocultar progresso
+                // Todas as modificações na UI devem acontecer aqui
                 binding.btnLogin.setEnabled(true);
 
-                // Login assíncrono com verificação de senha
                 if (usuario != null && SenhaUtils.verifyPassword(senha, usuario.getSenha())) {
                     Toast.makeText(LoginActivity.this, "Login bem-sucedido!", Toast.LENGTH_SHORT).show();
+                    Log.d("LoginActivity", "Redirecionando para MainActivity...");
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     finish();
                 } else {
@@ -75,5 +76,6 @@ public class LoginActivity extends AppCompatActivity {
                 }
             });
         });
+
     }
 }
