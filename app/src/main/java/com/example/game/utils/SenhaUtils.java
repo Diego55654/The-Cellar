@@ -13,18 +13,17 @@ public class SenhaUtils {
 
 
     // Número de interações que o hash faz com o código
-    private static final int ITERATIONS = 10000; 
+    private static final int ITERATIONS = 10000;
 
     // 256bits usado
-    private static final int KEY_LENGTH = 256; 
+    private static final int KEY_LENGTH = 256;
 
     // Algoritmo usado: PBKDF2
     private static final String ALGORITHM = "PBKDF2WithHmacSHA256";
 
     // Codifica array de bytes para Base64
     private static String encodeToBase64(byte[] input) {
-        // nao haver conflito de versão
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) { 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             return java.util.Base64.getEncoder().encodeToString(input);
         } else {
             return Base64.encodeToString(input, Base64.NO_WRAP);
@@ -69,3 +68,4 @@ public class SenhaUtils {
         return hashOfInput.equals(parts[1]);
     }
 }
+
