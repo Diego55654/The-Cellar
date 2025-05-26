@@ -20,6 +20,7 @@ public class UsuarioAdapter extends RecyclerView.Adapter<UsuarioViewHolder> {
         void onEditarClick(Usuario usuario);
         void onExcluirClick(Usuario usuario);
     }
+
     public UsuarioAdapter(List<Usuario> usuarios, OnUsuarioClickListener listener) {
         this.usuarios = usuarios;
         this.listener = listener;
