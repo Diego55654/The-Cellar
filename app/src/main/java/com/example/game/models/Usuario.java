@@ -13,9 +13,10 @@ public class Usuario {
     public int id;
     @ColumnInfo(name = "nome")
     public String nome;
-    @ColumnInfo(name = "senha")
-    public String email;
     @ColumnInfo(name = "email")
+
+    public String email;
+    @ColumnInfo(name = "senha")
 
     public String senha;
 
@@ -24,12 +25,9 @@ public class Usuario {
 
     private static final Pattern PATTERN = Pattern.compile(PASSWORD_REGEX);
 
-    //Objeto Usuario vazio devido a problemas com o Room
-    public Usuario() {
-    }
-
-    // Construtor customizado com validação de campos null
+    //Construtor da classe com validação de campos null
     public Usuario(String nome, String senha, String email) {
+
         this.nome = Objects.requireNonNull(nome, "O campo nome não pode ser nulo");
         this.senha = Objects.requireNonNull(senha, "O campo senha não pode ser nulo");
         this.email = Objects.requireNonNull(email, "O campo email não pode ser nulo");
@@ -38,7 +36,8 @@ public class Usuario {
             throw new IllegalArgumentException("Nenhum dos campos pode estar vazio.");
         }
     }
-    //Getters e Setters
+
+
     public String getEmail() {
         return email;
     }

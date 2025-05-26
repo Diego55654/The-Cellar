@@ -1,4 +1,4 @@
-package com.example.game.database;
+package com.example.game.ui.database;
 
 import androidx.room.*;
 
