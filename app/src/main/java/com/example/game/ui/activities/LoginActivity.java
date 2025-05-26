@@ -66,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
                 binding.btnLogin.setEnabled(true);
 
                 // Login assíncrono com verificação de senha
-                if (usuario != null && SenhaUtils.verifyPassword(senha, usuario.getSenha())) {
+                if (usuario != null && SenhaUtils.verificarSenha(senha, usuario.getSenha())) {
                     Toast.makeText(LoginActivity.this, "Login bem-sucedido!", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     finish();

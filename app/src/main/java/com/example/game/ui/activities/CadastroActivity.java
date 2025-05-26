@@ -47,7 +47,20 @@ public class CadastroActivity extends AppCompatActivity {
 
 
         // Cria o objeto Usuario e salva no banco
-        String senhaCriptografada = SenhaUtils.generateSecurePassword(senha);
+        String senhaCriptografada = SenhaUtils.gerarSenhaSegura(senha);
+
+        // Validação do formato do email
+        if (!Usuario.ValidarEmail(email)) {
+            exibirErro("Formato de email inválido. O email deve conter @ e um domínio válido (ex: usuario@email.com).");
+            return;
+        }
+
+        // Validação da força da senha
+        if (!Usuario.ValidarSenha(senha)) {
+            exibirErro("Senha inválida! A senha deve conter no mínimo 8 caracteres, " +
+                    "incluindo pelo menos uma letra maiúscula, uma letra minúscula e um número.");
+            return;
+        }
         Usuario novoUsuario = new Usuario(nome, email, senhaCriptografada);
 
         // Salvar no banco de dados em uma thread separada

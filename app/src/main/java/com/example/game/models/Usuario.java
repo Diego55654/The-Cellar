@@ -21,8 +21,10 @@ public class Usuario {
 
     private static final String PASSWORD_REGEX =
             "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$";
-
-    private static final Pattern PATTERN = Pattern.compile(PASSWORD_REGEX);
+    private static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\." +
+            "[a-zA-Z]{2,}$";
+    private static final Pattern SENHA_PATTERN = Pattern.compile(PASSWORD_REGEX);
+    private final static Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
 
     //Objeto Usuario vazio devido a problemas com o Room
     public Usuario() {
@@ -38,12 +40,23 @@ public class Usuario {
             throw new IllegalArgumentException("Nenhum dos campos pode estar vazio.");
         }
     }
+    public static boolean ValidarEmail(String email){
+        return email != null && EMAIL_PATTERN.matcher(email).matches();
+    }
+    // Método para validar senha
+    public static boolean ValidarSenha(String senha) {
+        return senha != null && SENHA_PATTERN.matcher(senha).matches();
+    }
+
     //Getters e Setters
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
+        if(!ValidarEmail(email)){
+            throw new IllegalArgumentException("Formato de email não aceito");
+        }
         this.email = email;
     }
     public String getNome() {
@@ -69,18 +82,18 @@ public class Usuario {
     public void setSenha(String senha) {
         this.senha = senha;
     }
-    public void trocarSenha(String novaSenha){
-        if (novaSenha != null && PATTERN.matcher(novaSenha).matches()) {
-            this.senha = SenhaUtils.generateSecurePassword(novaSenha); // Criptografa nova senha
+
+    public void transformarSenha(String novaSenha){
+        if (novaSenha != null && SENHA_PATTERN.matcher(novaSenha).matches()) {
+            this.senha = SenhaUtils.gerarSenhaSegura(novaSenha); // Criptografa nova senha
             System.out.println("Senha alterada com sucesso!");
         } else {
             System.out.println("Senha inválida! A senha deve conter no mínimo 8 caracteres, " +
                     "incluindo pelo menos uma letra maiúscula, uma letra minúscula e um número.");
         }
     }
-
     // Método para verificar se a senha digitada está correta
-    public boolean verifyPassword(String senhaDigitada) {
-        return SenhaUtils.verifyPassword(senhaDigitada, this.senha);
+    public boolean verificarSenha(String senhaDigitada) {
+        return SenhaUtils.verificarSenha(senhaDigitada, this.senha);
     }
 }

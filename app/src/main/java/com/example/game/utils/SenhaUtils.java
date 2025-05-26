@@ -51,14 +51,14 @@ public class SenhaUtils {
     }
 
     // Gera senha segura com salt
-    public static String generateSecurePassword(String password) {
+    public static String gerarSenhaSegura(String password) {
         String salt = generateSalt();
         String hashedPassword = hashPassword(password, salt);
         return salt + ":" + hashedPassword;
     }
 
     // Verifica se a senha digitada corresponde à armazenada
-    public static boolean verifyPassword(String inputPassword, String storedPassword) {
+    public static boolean verificarSenha(String inputPassword, String storedPassword) {
         String[] parts = storedPassword.split(":");
         if (parts.length != 2) {
             return false;
