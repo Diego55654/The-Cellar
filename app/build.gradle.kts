@@ -38,8 +38,8 @@ android {
 dependencies {
     // Room
     implementation(libs.room.runtime)
-    annotationProcessor(libs.room.compiler)
-    debugImplementation(libs.room.testing)
+    annotationProcessor(libs.room.compiler)  // CORRIGIDO: Agora referencia a dependência que existe no libs.versions.toml
+    testImplementation(libs.room.testing)    // CORRIGIDO: Mudou de debugImplementation para testImplementation + referência correta
 
     // UI e Core
     implementation(libs.appcompat)
