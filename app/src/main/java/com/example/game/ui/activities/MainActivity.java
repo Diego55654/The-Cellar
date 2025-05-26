@@ -8,9 +8,6 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.game.databinding.ActivityMainBinding;
-import com.example.game.models.Administrador;
-import com.example.game.models.Personagem;
-import com.example.game.models.Usuario;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
