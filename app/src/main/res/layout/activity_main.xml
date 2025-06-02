@@ -1,34 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:background="#000000">
 
-    <TextView
-        android:id="@+id/tvBemVindo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Bem-vindo ao App!"
-        android:textSize="18sp"
-        android:layout_marginTop="20dp"/>
+    <!-- Navigation Bar Lateral -->
+    <LinearLayout
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#0D3B66"
+        android:padding="8dp"
+        android:gravity="top|center_horizontal">
 
-    <!-->A principio este botão será responsável por redirecionar o usuário ao jogo que funcionará no navegador <!-->
+        <!-- Ícones ou botões de navegação -->
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/home"
+            android:contentDescription="Home"
+            android:layout_marginTop="16dp"
+            app:tint="#FFFFFF" />
 
-    <Button
-        android:id="@+id/btnEntrar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:backgroundTint="#dd7787"
-        android:text="Iniciar o game" />
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/info"
+            android:contentDescription="Sobre"
+            android:layout_marginTop="24dp"
+            app:tint="#FFFFFF" />
 
-    <Button
-        android:id="@+id/btnSair"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:backgroundTint="@color/black"
-        android:text="Sair" />
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/help"
+            android:contentDescription="Ajuda"
+            android:layout_marginTop="24dp"
+            app:tint="#FFFFFF" />
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/exit"
+            android:contentDescription="Sair"
+            android:layout_marginTop="24dp"
+            app:tint="#FFFFFF" />
+    </LinearLayout>
+
+    <!-- Conteúdo Principal -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvBemVindo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Clique no ícone abaixo para jogar The Cellar!"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:layout_marginTop="20dp"/>
+
+        <Button
+            android:id="@+id/btnEntrar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="#1A75BB"
+            android:text="Iniciar o Game"
+            android:textColor="#FFFFFF"/>
+
+        <Button
+            android:id="@+id/btnSair"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="#222222"
+            android:text="Sair"
+            android:textColor="#FFFFFF"/>
+    </LinearLayout>
 
 </LinearLayout>
