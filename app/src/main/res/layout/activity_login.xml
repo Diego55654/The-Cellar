@@ -5,24 +5,26 @@
     android:layout_height="match_parent"
     android:padding="16dp"
     android:orientation="vertical"
-    tools:context=".ui.activities.LoginActivity"
     android:gravity="center"
-    android:background="#8DD2F8">
+    android:background="#0A0A0A"
+    tools:context=".ui.activities.LoginActivity">
 
     <TextView
-        android:layout_width="144dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:layout_marginBottom="24dp"
-        android:text="  Login  "
-        android:textColor="#1466A9"
-        android:textSize="42sp"
+        android:shadowColor="#000000"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="4"
+        android:text="Faça Login para jogar!"
+        android:textColor="#004766"
+        android:textSize="25sp"
         android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -30,11 +32,13 @@
             android:id="@+id/etEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:drawable/editbox_background"
+            android:background="#1F1F1F"
             android:hint="Email"
             android:inputType="textEmailAddress"
-            android:minHeight="48dp"
-            android:padding="12dp"
+            android:minHeight="50dp"
+            android:padding="14dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#888888"
             android:textSize="16sp" />
 
         <EditText
@@ -42,31 +46,32 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:background="@android:drawable/editbox_background"
+            android:background="#1F1F1F"
             android:hint="Senha"
             android:inputType="textPassword"
-            android:minHeight="48dp"
-            android:padding="12dp"
+            android:minHeight="50dp"
+            android:padding="14dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#888888"
             android:textSize="16sp" />
 
         <Button
             android:id="@+id/btnLogin"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:backgroundTint="#1466A9"
-            android:padding="12dp"
+            android:layout_marginTop="18dp"
+            android:backgroundTint="#004766"
+            android:padding="14dp"
             android:text="Entrar"
-            android:textColor="@android:color/white"
+            android:textColor="#FFFFFF"
             android:textSize="18sp"
-
-            />
-
-
+            android:elevation="6dp"/>
     </LinearLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="70dp" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -78,19 +83,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:textColor="@color/black"
             android:text="Não possui conta? Cadastre-se já!"
+            android:textColor="#CCCCCC"
             android:textSize="16sp" />
 
         <Button
             android:id="@+id/btnCadastro"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:backgroundTint="#2A8392"
-            android:padding="12dp"
+            android:backgroundTint="#003247"
+            android:padding="14dp"
             android:text="Cadastrar-se"
-            android:textColor="@android:color/white"
-            android:textSize="18sp" />
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:elevation="6dp"/>
     </LinearLayout>
 
 </LinearLayout>
