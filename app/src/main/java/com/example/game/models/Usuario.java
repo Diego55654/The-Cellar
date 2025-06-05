@@ -13,11 +13,12 @@ public class Usuario {
     public int id;
     @ColumnInfo(name = "nome")
     public String nome;
-    @ColumnInfo(name = "senha")
-    public String email;
     @ColumnInfo(name = "email")
+    public String email;
 
+    @ColumnInfo(name = "senha")
     public String senha;
+
 
     private static final String PASSWORD_REGEX =
             "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$";
@@ -31,15 +32,16 @@ public class Usuario {
     }
 
     // Construtor customizado com validação de campos null
-    public Usuario(String nome, String senha, String email) {
+    public Usuario(String nome,String email ,String senha) {
         this.nome = Objects.requireNonNull(nome, "O campo nome não pode ser nulo");
-        this.senha = Objects.requireNonNull(senha, "O campo senha não pode ser nulo");
         this.email = Objects.requireNonNull(email, "O campo email não pode ser nulo");
+        this.senha = Objects.requireNonNull(senha, "O campo senha não pode ser nulo");
 
-        if (nome.isEmpty() || senha.isEmpty() || email.isEmpty()) {
+        if (nome.isEmpty() ||  email.isEmpty() || senha.isEmpty()) {
             throw new IllegalArgumentException("Nenhum dos campos pode estar vazio.");
         }
     }
+    //Metodos de validacao do formato do Email/Senha no CadastroActivity
     public static boolean ValidarEmail(String email){
         return email != null && EMAIL_PATTERN.matcher(email).matches();
     }
@@ -53,6 +55,7 @@ public class Usuario {
         return email;
     }
 
+    //Bloqueia emails fora do padrão: "@gmail.com"
     public void setEmail(String email) {
         if(!ValidarEmail(email)){
             throw new IllegalArgumentException("Formato de email não aceito");
@@ -83,17 +86,8 @@ public class Usuario {
         this.senha = senha;
     }
 
-    public void transformarSenha(String novaSenha){
-        if (novaSenha != null && SENHA_PATTERN.matcher(novaSenha).matches()) {
-            this.senha = SenhaUtils.gerarSenhaSegura(novaSenha); // Criptografa nova senha
-            System.out.println("Senha alterada com sucesso!");
-        } else {
-            System.out.println("Senha inválida! A senha deve conter no mínimo 8 caracteres, " +
-                    "incluindo pelo menos uma letra maiúscula, uma letra minúscula e um número.");
-        }
-    }
-    // Método para verificar se a senha digitada está correta
-    public boolean verificarSenha(String senhaDigitada) {
-        return SenhaUtils.verificarSenha(senhaDigitada, this.senha);
+    // Método para verificar se o email digitado está correto
+    public boolean autenticarEmail(String emailDigitado) {
+        return this.email != null && this.email.equalsIgnoreCase(emailDigitado);
     }
 }
