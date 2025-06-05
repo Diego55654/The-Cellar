@@ -2,7 +2,6 @@ package com.example.game.ui.activities;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -38,36 +37,54 @@ public class CadastroActivity extends AppCompatActivity {
     }
 
     private void validarCadastro() {
+        String nome = binding.cadNome.getText().toString().trim();
         String email = binding.cadEmail.getText().toString().trim();
         String senha = binding.cadSenha.getText().toString().trim();
-        String nome = binding.cadNome.getText().toString().trim();
 
-        // Inicialmente, desabilita o botão para evitar cliques repetidos
-        binding.btnCadastrar.setEnabled(false);
+                // Validação de campos vazios
+                if (nome.isEmpty() || email.isEmpty() || senha.isEmpty()) {
+                    exibirErro("Por favor, preencha todos os campos!");
+                    return;
+                }
 
+                // Validação do formato do email
+                if (!Usuario.ValidarEmail(email)) {
+                    exibirErro("Formato de email inválido. O email deve conter @ e um domínio válido (ex: usuario@email.com).");
+                    return;
+                }
 
-        // Cria o objeto Usuario e salva no banco
-        String senhaCriptografada = SenhaUtils.gerarSenhaSegura(senha);
+                // Validação da força da senha
+                if (!Usuario.ValidarSenha(senha)) {
+                    exibirErro("Senha inválida! A senha deve conter no mínimo 8 caracteres, " +
+                            "incluindo pelo menos uma letra maiúscula, uma letra minúscula e um número.");
+                    return;
+                }
 
-        // Validação do formato do email
-        if (!Usuario.ValidarEmail(email)) {
-            exibirErro("Formato de email inválido. O email deve conter @ e um domínio válido (ex: usuario@email.com).");
-            return;
-        }
+                // Desabilita o botão após as autenticações passarem
+                binding.btnCadastrar.setEnabled(false);
 
-        // Validação da força da senha
-        if (!Usuario.ValidarSenha(senha)) {
-            exibirErro("Senha inválida! A senha deve conter no mínimo 8 caracteres, " +
-                    "incluindo pelo menos uma letra maiúscula, uma letra minúscula e um número.");
-            return;
-        }
-        Usuario novoUsuario = new Usuario(nome, email, senhaCriptografada);
-
-        // Salvar no banco de dados em uma thread separada
+        //Verifica se email já existe no banco
         executor.execute(() -> {
             try {
+                // Verifica se email já está cadastrado
+                Usuario usuarioExistente = db.usuarioDao().getUsuarioByEmail(email);
+
+                    if (usuarioExistente != null) {
+                        runOnUiThread(() -> exibirErro("Este email já está cadastrado!"));
+                        return;
+                    }
+
+                // Criptografar senha e criar usuário
+                String senhaCriptografada = SenhaUtils.gerarSenhaSegura(senha);
+
+
+                // Usuario : (nome, email, senha)
+                Usuario novoUsuario = new Usuario(nome, email, senhaCriptografada);
+
+                // Salvar no banco de dados
                 db.usuarioDao().inserir(novoUsuario);
                 runOnUiThread(this::exibirSucesso);
+
             } catch (Exception e) {
                 runOnUiThread(() -> exibirErro("Erro ao cadastrar: " + e.getMessage()));
             }
@@ -78,7 +95,7 @@ public class CadastroActivity extends AppCompatActivity {
     private void exibirErro(String mensagem) {
         Toast.makeText(this, mensagem, Toast.LENGTH_SHORT).show();
 
-        // Reabilita o botão para novas tentativas
+        // reabilita o botão para novas tentativas
         binding.btnCadastrar.setEnabled(true);
     }
 
@@ -90,7 +107,7 @@ public class CadastroActivity extends AppCompatActivity {
                 .setCancelable(false)
                 .setPositiveButton("Ok", (dialogInterface, i) -> {
                     dialogInterface.dismiss();
-                    finish(); // Volta para a activity anterior
+                        finish(); // Volta para a activity anterior
                 })
                 .create();
 
@@ -98,9 +115,9 @@ public class CadastroActivity extends AppCompatActivity {
 
         // Cria um Delay após o alerta de sucesso
         new Handler().postDelayed(() -> {
-            if (dialog.isShowing()) {
-                dialog.dismiss();
-                finish();
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                        finish();
             }
         }, 3000); // 3 segundos de Delay
     }
