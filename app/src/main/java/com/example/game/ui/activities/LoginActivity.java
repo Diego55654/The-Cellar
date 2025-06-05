@@ -49,31 +49,43 @@ public class LoginActivity extends AppCompatActivity {
         // Inicialmente, desabilita o botão para evitar cliques repetidos
         binding.btnLogin.setEnabled(false);
 
-        // Verifica as credenciais do administrador
-        if (email.equals(ADMIN_EMAIL) && senha.equals(ADMIN_PASS)) {
-            Toast.makeText(this, "Login como administrador!", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this, AdminActivity.class));
-            finish();
-            return;
-        }
+                        // Verifica as credenciais do administrador
+                        if (email.equals(ADMIN_EMAIL) && senha.equals(ADMIN_PASS)) {
+                            Toast.makeText(this, "Login como administrador!", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(this, AdminActivity.class));
+                            finish();
+                            return;
+                        }
 
         // Executa a consulta numa Thread separada
         executor.execute(() -> {
-            final Usuario usuario = usuarioDAO.getUsuarioByEmail(email);
+            try {
+                final Usuario usuario = usuarioDAO.getUsuarioByEmail(email);
 
-            runOnUiThread(() -> {
-                // Ocultar progresso
-                binding.btnLogin.setEnabled(true);
+                runOnUiThread(() -> {
+                    // Reabilita o botão
+                    binding.btnLogin.setEnabled(true);
 
-                // Login assíncrono com verificação de senha
-                if (usuario != null && SenhaUtils.verificarSenha(senha, usuario.getSenha())) {
-                    Toast.makeText(LoginActivity.this, "Login bem-sucedido!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                    finish();
-                } else {
-                    Toast.makeText(LoginActivity.this, "Usuário ou senha incorretos!", Toast.LENGTH_SHORT).show();
-                }
-            });
+                            // Usa os métodos da classe Usuario (Email) e SenhaUtils(senha).
+                            if (usuario != null) {
+                                // Verifica se email e senha estão corretos usando métodos da classe
+                                if (usuario.autenticarEmail(email) && SenhaUtils.verificarSenha(senha, SenhaUtils.gerarSenhaSegura(senha))) {
+                                    Toast.makeText(LoginActivity.this, "Login bem-sucedido!", Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                    finish();
+                                } else {
+                                    Toast.makeText(LoginActivity.this, "Email ou senha incorretos!", Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                Toast.makeText(LoginActivity.this, "Usuário não encontrado!", Toast.LENGTH_SHORT).show();
+                            }
+                });
+            } catch (Exception e) {
+                runOnUiThread(() -> {
+                    binding.btnLogin.setEnabled(true);
+                    Toast.makeText(LoginActivity.this, "Erro ao fazer login: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+            }
         });
     }
 }

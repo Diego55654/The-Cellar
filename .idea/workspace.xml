@@ -17,7 +17,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fd4e1598-3282-4bc3-a155-9a33fdcc73aa" name="Changes" comment="fix(libs.version.toml)">
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/game/ui/activities/CadastroActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/game/ui/activities/CadastroActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/game/ui/activities/LoginActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/game/ui/activities/LoginActivity.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
