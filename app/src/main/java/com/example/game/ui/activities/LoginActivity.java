@@ -7,8 +7,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.game.database.AppDatabase;
 import com.example.game.databinding.ActivityLoginBinding;
-import com.example.game.database.UsuarioDAO; // Import corrigido
+import com.example.game.database.UsuarioDAO;
 import com.example.game.models.Usuario;
+import com.example.game.session.AppSession;
 import com.example.game.utils.SenhaUtils;
 
 import java.util.concurrent.Executor;
@@ -19,6 +20,7 @@ public class LoginActivity extends AppCompatActivity {
     private ActivityLoginBinding binding;
     private AppDatabase db;
     private UsuarioDAO usuarioDAO;
+    private AppSession appSession;
     private final Executor executor = Executors.newSingleThreadExecutor();
 
     private static final String ADMIN_EMAIL = "tcc";
@@ -30,7 +32,16 @@ public class LoginActivity extends AppCompatActivity {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Inicializa o banco de dados - []removido allowMainThreadQueries()
+        // Obtém a instância do AppSession
+        appSession = (AppSession) getApplication();
+
+        // Verifica se já está logado
+        if (appSession.isLoggedIn()) {
+            DirecionaActivity();
+            return;
+        }
+
+        // Inicializa o banco de dados
         db = AppDatabase.getDatabase(this);
         usuarioDAO = db.usuarioDao();
 
@@ -49,13 +60,15 @@ public class LoginActivity extends AppCompatActivity {
         // Inicialmente, desabilita o botão para evitar cliques repetidos
         binding.btnLogin.setEnabled(false);
 
-                        // Verifica as credenciais do administrador
-                        if (email.equals(ADMIN_EMAIL) && senha.equals(ADMIN_PASS)) {
-                            Toast.makeText(this, "Login como administrador!", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(this, AdminActivity.class));
-                            finish();
-                            return;
-                        }
+        // Verifica as credenciais do administrador
+        if (email.equals(ADMIN_EMAIL) && senha.equals(ADMIN_PASS)) {
+            // Faz login como admin
+            appSession.loginAdmin("Administrador");
+            Toast.makeText(this, "Login como administrador!", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, AdminActivity.class));
+            finish();
+            return;
+        }
 
         // Executa a consulta numa Thread separada
         executor.execute(() -> {
@@ -66,19 +79,22 @@ public class LoginActivity extends AppCompatActivity {
                     // Reabilita o botão
                     binding.btnLogin.setEnabled(true);
 
-                            // Usa os métodos da classe Usuario (Email) e SenhaUtils(senha).
-                            if (usuario != null) {
-                                // Verifica se email e senha estão corretos usando métodos da classe
-                                if (usuario.autenticarEmail(email) && SenhaUtils.verificarSenha(senha, SenhaUtils.gerarSenhaSegura(senha))) {
-                                    Toast.makeText(LoginActivity.this, "Login bem-sucedido!", Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                                    finish();
-                                } else {
-                                    Toast.makeText(LoginActivity.this, "Email ou senha incorretos!", Toast.LENGTH_SHORT).show();
-                                }
-                            } else {
-                                Toast.makeText(LoginActivity.this, "Usuário não encontrado!", Toast.LENGTH_SHORT).show();
-                            }
+                    if (usuario != null) {
+                        // Verifica se email e senha estão corretos
+                        if (usuario.autenticarEmail(email) &&
+                                SenhaUtils.verificarSenha(senha, usuario.getSenha())) {
+
+                            // Faz login do usuário na sessão
+                            appSession.login(usuario.getId(), usuario.getNome(), usuario.getEmail());
+
+                            Toast.makeText(LoginActivity.this, "Login bem-sucedido!", Toast.LENGTH_SHORT).show();
+                            DirecionaActivity();
+                        } else {
+                            Toast.makeText(LoginActivity.this, "Email ou senha incorretos!", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Usuário não encontrado!", Toast.LENGTH_SHORT).show();
+                    }
                 });
             } catch (Exception e) {
                 runOnUiThread(() -> {
@@ -87,5 +103,16 @@ public class LoginActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    private void DirecionaActivity() {
+        Intent intent;
+        if (appSession.isAdmin()) {
+            intent = new Intent(this, AdminActivity.class);
+        } else {
+            intent = new Intent(this, MainActivity.class);
+        }
+        startActivity(intent);
+        finish();
     }
 }
