@@ -77,30 +77,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
-
-    // Cria o menu de opções na barra superior
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
-    }
-
-    // Define ações ao clicar em itens do menu (logout e perfil) -- [Em desenvolvimento]
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_logout) {
-            Sair(); // Realiza logout
-            return true;
-        } else if (id == R.id.action_profile) {
-            // Abrir tela de perfil
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     // Encerra a sessão do usuário e redireciona para a tela de login
     private void Sair() {
         appSession.logout();
