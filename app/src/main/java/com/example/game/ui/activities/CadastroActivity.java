@@ -8,6 +8,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.game.database.AppDatabase;
+import com.example.game.database.SupabaseService;
 import com.example.game.databinding.ActivityCadastroBinding;
 import com.example.game.models.Usuario;
 import com.example.game.utils.SenhaUtils;
@@ -31,7 +32,7 @@ public class CadastroActivity extends AppCompatActivity {
 
         // Inicializar banco de dados
         db = AppDatabase.getDatabase(this);
-
+        
         // Ação do botão de cadastro com validações
         binding.btnCadastrar.setOnClickListener(view -> validarCadastro());
     }
@@ -74,7 +75,7 @@ public class CadastroActivity extends AppCompatActivity {
                         return;
                     }
 
-                // Criptografar senha e criar usuário
+                // Criptografar senha e cria usuário
                 String senhaCriptografada = SenhaUtils.gerarSenhaSegura(senha);
 
 
@@ -83,6 +84,9 @@ public class CadastroActivity extends AppCompatActivity {
 
                 // Salvar no banco de dados
                 db.usuarioDao().inserir(novoUsuario);
+                
+                //Salvar no Supabase
+                SupabaseService.salvarSupabase(novoUsuario);
                 runOnUiThread(this::exibirSucesso);
 
             } catch (Exception e) {
