@@ -7,7 +7,7 @@ import androidx.room.*;
 import com.example.game.models.Usuario;
 import com.example.game.database.UsuarioDAO;
 
-@Database(entities = {Usuario.class}, version = 1, exportSchema = false)
+@Database(entities = {Usuario.class}, version = 2, exportSchema = false) // Versao 2 inclui o campo dataCriacao
 public abstract class AppDatabase extends RoomDatabase {
 
     private static volatile AppDatabase INSTANCE;
@@ -24,6 +24,7 @@ public abstract class AppDatabase extends RoomDatabase {
                                     AppDatabase.class,
                                     "app_db"
                             )
+                            .fallbackToDestructiveMigration() // Migracoes do Banco
                             .build();
                 }
             }
