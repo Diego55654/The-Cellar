@@ -1,77 +1,57 @@
-🕹️ The Cellar – O game indie de exploração.
+🎮🕹 The Cellar — Jogo de escolhas com múltiplos finais 
 
-The Cellar é um jogo mobile desenvolvido como Trabalho de Conclusão de Curso (TCC) do Curso Técnico em Informática Integrado ao Ensino Médio. Seu principal objetivo é estimular o raciocínio lógico dos jogadores por meio de puzzles desafiadores, em um ambiente 2D de fantasia, com visual em PixelArt e câmera isométrica. O jogo oferece modos solo e cooperativo local, incentivando a estratégia, a comunicação e o trabalho em equipe.
+The Cellar é um jogo narrativo baseado em escolhas, desenvolvido como Trabalho de Conclusão de Curso (TCC) do Curso Técnico em Informática Integrado ao Ensino Médio. A experiência se desenrola em uma ambientação sombria e fantástica, com personagens diferentes e muito interessados no mundo em que vivem.
 
-📜 Visão Geral
+📲 Assim, o aplicativo móvel serve como porta de entrada, um passaporte para o jogo em si, funcionando como painel de acesso seguro: após o cadastro e autenticação, o usuário é redirecionado para o site oficial onde o jogo acontece – tendo como objetivo recuperar dados do jogador ao final daquela partida para dentro do app em forma de lista, permitindo que o jogador possa ter um retorno de sua própria gameplay. Por exemplo, tempo gasto, final alcançado, avaliação do jogo, entre outros dados relevantes que ainda estãos sendo discutidos entre os desenvolvedores.
 
-Neste mundo misterioso, dois personagens descobrem uma dimensão paralela repleta de inimigos, segredos e quebra-cabeças. 
-É possível jogar sozinho ou em dupla temporária, unindo forças para superar puzzles que exigem cooperação e habilidades distintas.
+👾 Características Principais
 
-🎮 Funcionalidades Principais
+    Escolhas impactantes que definem o rumo da história
 
-- Cadastro e autenticação de usuários com senha criptografada, sendo este um requisito obrigatório para ter acesso ao game.
-
-- Modos de jogo:
-      - **Solo**: jogue sozinho e acompanhe seu progresso;
-      - **Cooperativo**: jogue com outro usuário localmente, com progresso separado;
+    Múltiplos finais baseados nas decisões do jogador
     
-- Registro detalhado de partidas:
-        - Fase atual;
-        - Puzzles resolvidos;
-        - Personagens utilizados;
-        - Pontuação total;
-        - Tempo gasto em cada desafio;
-            - Progresso salvo individualmente por modo (solo e coop);
-            - Fases com dificuldade progressiva;
-            - Puzzles com desafios cooperativos: ações simultâneas, troca de itens, etc;
-            - Personagens jogáveis com **habilidades especiais únicas**;
+    4 personagens jogáveis, cada um com suas motivações e habilidades únicas
+
+    Ambiente imersivo repleto de mistérios, quebra-cabeças e consequências inesperadas
+
+📝 Funcionalidades do Aplicativo
+
+    Cadastro e login com e-mail e senha criptografada
+
+    Sistema de sessão persistente com Shared Preferences
+
+    Banco local com Room Jetpack + sincronização com Supabase
+
+    Área administrativa para gestão de usuários + acesso ao CRUD
+
+    Botão de acesso ao jogo via Web (URL)
+
+    Interface intuitiva com View Binding e RecyclerView
 
 💡 Tecnologias Utilizadas
 
-  🖥️ Linguagens: Java ☕, HTML 🌐, CSS 🎨, JavaScript ⚡
+Linguagens: Java, HTML, CSS, JavaScript Banco de Dados: SQLite via Room + Serviços do Supabase; Segurança: Criptografia de senha, validação com Regex; Versão Web: Integrada ao app via botão direcionador (WebView em andamento).
 
-  🗄️ Banco de Dados: Room Jetpack 🏠 com SQLite 🧩 + Hospedagem na Nuvem ☁️
+🛠️ Público-Alvo
 
-  🔁 Versionamento: Git 🔧 / GitHub 
+Jogadores que buscam:
 
-  💾 Sistema de Progresso: Armazenamento de partidas salvas e dados do jogador 📊
+    Narrativas ramificadas e finais alternativos
 
-  🔐 Autenticação: Segurança com criptografia de senha 🔒
+    Jogos mais retrô com estética gótica
 
- 📲 Público-Alvo
-
-Jogadores que gostam de:
-
-  - Desafios lógicos e puzzles;
-  - Jogos retrô em estilo PixelArt;
-  - Experiências solo e cooperativas;
-
-🛠️ Painel Administrativo
-
-Interface exclusiva para desenvolvedores com funcionalidades de gerenciamento:
-
-  - CRUD de 🧑‍💼 usuários;
-  - CRUD de 🌍 fases;
-  - CRUD de 🧩 puzzles;
-  - CRUD de 🧙‍♂️ personagens;
-
-⚠️ Acesso restrito via login de administrador.
+    Experiência de tomada de decisão com impacto significativo
 
 🚀 Futuras Expansões
 
-  - Rankings de duplas;
-  - Eventos e desafios cooperativos;
-  - Sistema de conquistas;
-  - Estatísticas avançadas de desempenho;
+    Interface com WebView para melhor imersão no app
+
+    Easter Eggs com personagens secretos
+
+    Estatísticas de decisões dos usuários
 
 📄 Licença
 
 Este projeto está sob a licença MIT.
 
-👨‍💻 Desenvolvido por Diego Ramon, Daniel Paulino, Carlos Daniel e Melissa.
-
----------------
-
-<ddcm> “> 🧠 **DDCM Games diz:** “Não basta coragem, é necessário dedicação e persistência para superar The Cellar.” </ddcm>
-
-
+Desenvolvido por: Diego Ramon, Daniel Paulino, Carlos Daniel e Melissa. Estúdio: DDCM Games Citação: “Não basta coragem, é necessário dedicação e persistência para superar The Cellar.”
