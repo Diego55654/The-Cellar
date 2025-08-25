@@ -14,6 +14,8 @@ public class UsuarioViewHolder extends RecyclerView.ViewHolder {
     public Button btnEditar;
     public Button btnExcluir;
 
+
+
     public UsuarioViewHolder(View itemView) {
         super(itemView);
         txtNome = itemView.findViewById(R.id.txtNome);

@@ -37,23 +37,23 @@ import java.util.regex.Pattern;
 
     // Construtor customizado com validação de campos null
     public Usuario(String nome,String email ,String senha) {
-        this.nome = Objects.requireNonNull(nome, "O campo nome não pode ser nulo");
-        this.email = Objects.requireNonNull(email, "O campo email não pode ser nulo");
-        this.senha = Objects.requireNonNull(senha, "O campo senha não pode ser nulo");
-        this.dataCriacao = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+                    this.nome = Objects.requireNonNull(nome, "O campo nome não pode ser nulo");
+                    this.email = Objects.requireNonNull(email, "O campo email não pode ser nulo");
+                    this.senha = Objects.requireNonNull(senha, "O campo senha não pode ser nulo");
+                    this.dataCriacao = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
                 .format(new Date());
         if (nome.isEmpty() ||  email.isEmpty() || senha.isEmpty()) {
             throw new IllegalArgumentException("Nenhum dos campos pode estar vazio.");
         }
     }
     //Metodos de validacao do formato do Email/Senha no CadastroActivity
-        public static boolean ValidarEmail(String email){
-            return email != null && EMAIL_PATTERN.matcher(email).matches();
-        }
+            public static boolean ValidarEmail(String email){
+                return email != null && EMAIL_PATTERN.matcher(email).matches();
+            }
     // Método para validar senha
-        public static boolean ValidarSenha(String senha) {
-            return senha != null && SENHA_PATTERN.matcher(senha).matches();
-        }
+            public static boolean ValidarSenha(String senha) {
+                return senha != null && SENHA_PATTERN.matcher(senha).matches();
+            }
 
     //Getters e Setters
     public String getEmail() {

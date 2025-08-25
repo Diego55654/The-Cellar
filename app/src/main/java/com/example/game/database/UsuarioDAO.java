@@ -23,4 +23,11 @@ public interface UsuarioDAO {
     Usuario getUsuarioByEmail(String email);
     @Query("SELECT * FROM usuarios")
     List<Usuario> getAll();
+
+    @Query("UPDATE usuarios SET nome = :nome, senha = :senha WHERE email = :email")
+    void atualizarUsuarioPorEmail(String nome, String senha, String email);
+
+    @Query("DELETE FROM usuarios WHERE email = :email")
+    void excluirUsuarioPorEmail(String email);
+
 }

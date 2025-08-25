@@ -5,7 +5,6 @@ import android.content.Context;
 import androidx.room.*;
 
 import com.example.game.models.Usuario;
-import com.example.game.database.UsuarioDAO;
 
 @Database(entities = {Usuario.class}, version = 2, exportSchema = false) // Versao 2 inclui o campo dataCriacao
 public abstract class AppDatabase extends RoomDatabase {
