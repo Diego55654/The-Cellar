@@ -7,6 +7,42 @@
     android:padding="16dp"
     android:background="#000000">
 
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/nome_Usuario"
+        android:text="Digite seu nome"
+        android:padding="12dp"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#1A75BB"
+        android:layout_marginBottom="12dp">
+
+    </TextView>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/email_Usuario"
+        android:text="Digite seu email"
+        android:padding="12dp"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#1A75BB"
+        android:layout_marginBottom="12dp">
+
+    </TextView>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/senha_Usuario"
+        android:text="@string/digite_sua_senha"
+        android:padding="12dp"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#1A75BB"
+        android:layout_marginBottom="12dp">
+
+    </TextView>
+
     <Button
         android:id="@+id/btnAdicionarUsuario"
         android:layout_width="match_parent"
@@ -16,6 +52,16 @@
         android:textColor="#FFFFFF"
         android:backgroundTint="#1A75BB"
         android:layout_marginBottom="12dp"/>
+    <Button
+        android:id="@+id/btnAtualizarUsuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Atualizar Usuario"
+        android:padding="12dp"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#1A75BB"
+        android:layout_marginBottom="12dp"/>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewUsuarios"

@@ -3,6 +3,7 @@ package com.example.game.recycler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,14 +14,13 @@ import java.util.List;
 
 public class UsuarioAdapter extends RecyclerView.Adapter<UsuarioViewHolder> {
 
-    private List<Usuario> usuarios;
-    private OnUsuarioClickListener listener;
+    private final List<Usuario> usuarios;
+    private final OnUsuarioClickListener listener;
 
     public interface OnUsuarioClickListener {
         void onEditarClick(Usuario usuario);
         void onExcluirClick(Usuario usuario);
-
-        void onAdicionarClick(Usuario usuario);
+        void onAdicionarClick(Usuario usuario); // Assuming this is used elsewhere
     }
 
     public UsuarioAdapter(List<Usuario> usuarios, OnUsuarioClickListener listener) {
@@ -31,9 +31,8 @@ public class UsuarioAdapter extends RecyclerView.Adapter<UsuarioViewHolder> {
     @NonNull
     @Override
     public UsuarioViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        //Infla o XML que representa um usuario
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_usuario, parent, false);
-        return new UsuarioViewHolder(view); 
+        return new UsuarioViewHolder(view);
     }
 
     @Override

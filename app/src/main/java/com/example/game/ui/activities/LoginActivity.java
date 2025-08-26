@@ -3,11 +3,12 @@ package com.example.game.ui.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.game.database.AppDatabase;
-import com.example.game.databinding.ActivityLoginBinding;
 import com.example.game.database.UsuarioDAO;
+import com.example.game.databinding.ActivityLoginBinding;
 import com.example.game.models.Usuario;
 import com.example.game.session.AppSession;
 import com.example.game.utils.SenhaUtils;
@@ -18,7 +19,6 @@ import java.util.concurrent.Executors;
 public class LoginActivity extends AppCompatActivity {
 
     private ActivityLoginBinding binding;
-    private AppDatabase db;
     private UsuarioDAO usuarioDAO;
     private AppSession appSession;
     private final Executor executor = Executors.newSingleThreadExecutor();
@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         // Inicializa o banco de dados
-        db = AppDatabase.getDatabase(this);
+        AppDatabase db = AppDatabase.getDatabase(this);
         usuarioDAO = db.usuarioDao();
 
         binding.btnLogin.setOnClickListener(view -> validarLogin());
@@ -86,7 +86,6 @@ public class LoginActivity extends AppCompatActivity {
 
                             // Faz login do usuário na sessão
                             appSession.login(usuario.getId(), usuario.getNome(), usuario.getEmail());
-
                             Toast.makeText(LoginActivity.this, "Login bem-sucedido!", Toast.LENGTH_SHORT).show();
                             DirecionaActivity();
                         } else {

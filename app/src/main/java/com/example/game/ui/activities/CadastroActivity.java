@@ -2,6 +2,7 @@ package com.example.game.ui.activities;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -81,6 +82,8 @@ public class CadastroActivity extends AppCompatActivity {
 
                 // Usuario : (nome, email, senha)
                 Usuario novoUsuario = new Usuario(nome, email, senhaCriptografada);
+                //Depuração simples
+                Log.d("DEBUB", "DATA DE CRIAÇÃO" + novoUsuario.getDataCriacao());
 
                 // Salvar no banco de dados
                 db.usuarioDao().inserir(novoUsuario);
