@@ -8,40 +8,43 @@
     android:background="#000000">
 
 
-    <TextView
+    <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/nome_Usuario"
-        android:text="Digite seu nome"
+        android:hint="Digite seu nome"
         android:padding="12dp"
         android:textColor="#FFFFFF"
+        android:textColorHint="#CCCCCC"
         android:backgroundTint="#1A75BB"
         android:layout_marginBottom="12dp">
 
-    </TextView>
-    <TextView
+    </EditText>
+    <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/email_Usuario"
-        android:text="Digite seu email"
+        android:hint="Digite seu email"
         android:padding="12dp"
         android:textColor="#FFFFFF"
+        android:textColorHint="#CCCCCC"
         android:backgroundTint="#1A75BB"
         android:layout_marginBottom="12dp">
 
-    </TextView>
+    </EditText>
 
-    <TextView
+    <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/senha_Usuario"
-        android:text="@string/digite_sua_senha"
+        android:hint="@string/digite_sua_senha"
         android:padding="12dp"
         android:textColor="#FFFFFF"
+        android:textColorHint="#CCCCCC"
         android:backgroundTint="#1A75BB"
         android:layout_marginBottom="12dp">
 
-    </TextView>
+    </EditText>
 
     <Button
         android:id="@+id/btnAdicionarUsuario"

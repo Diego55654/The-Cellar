@@ -81,14 +81,14 @@ public class AdminActivity extends AppCompatActivity {
         binding.btnAdicionarUsuario.setOnClickListener(v -> {
             String nome = binding.nomeUsuario.getText().toString().trim();
             String email = binding.emailUsuario.getText().toString().trim();
-            String senha = binding.emailUsuario.getText().toString().trim();
+            String senha = binding.senhaUsuario.getText().toString().trim(); // CORRIGIDO* o campo senha recebia email
 
             if (nome.isEmpty() || email.isEmpty() || senha.isEmpty()) {
                 Toast.makeText(this, "Preencha todos os campos.", Toast.LENGTH_SHORT).show();
                 return;
             }
             executor.execute(() -> {
-                String senhaSegura = SenhaUtils.gerarSenhaSegura(SenhaUtils.gerarSenhaSegura(senha));
+                String senhaSegura = SenhaUtils.gerarSenhaSegura(senha); // Retirando duplicações no código
                 Usuario novoUsuario = new Usuario(nome, email, senhaSegura);
 
                 db.usuarioDao().inserir(novoUsuario); //Insere no Room
@@ -96,6 +96,10 @@ public class AdminActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     carregarUsuarios();
                     mensagemAdicionado(novoUsuario);
+                        //Limpa os campos depois de adicionar
+                            binding.nomeUsuario.setText("");
+                            binding.emailUsuario.setText("");
+                            binding.senhaUsuario.setText("");
                 });
             });
         });
@@ -141,16 +145,14 @@ public class AdminActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle("Excluir usuário")
                 .setMessage("Deseja realmente excluir o usuário com email " + email + "?")
-                .setPositiveButton("Sim", (dialog, which) -> {
-                    executor.execute(() -> {
-                        SupabaseService.excluirPorEmail(email);
-                        db.usuarioDao().excluirUsuarioPorEmail(email);
-                        runOnUiThread(() -> {
-                            carregarUsuarios();
-                            Toast.makeText(this, "Usuário excluído!", Toast.LENGTH_SHORT).show();
-                        });
+                .setPositiveButton("Sim", (dialog, which) -> executor.execute(() -> {
+                    SupabaseService.excluirPorEmail(email);
+                    db.usuarioDao().excluirUsuarioPorEmail(email);
+                    runOnUiThread(() -> {
+                        carregarUsuarios();
+                        Toast.makeText(this, "Usuário excluído!", Toast.LENGTH_SHORT).show();
                     });
-                })
+                }))
                 .setNegativeButton("Não", null)
                 .show();
     }
