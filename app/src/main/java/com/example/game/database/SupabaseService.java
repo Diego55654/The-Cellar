@@ -1,15 +1,11 @@
 package com.example.game.database;
 
-import static java.lang.System.in;
-
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.example.game.models.Usuario;
 import com.example.game.ui.activities.AdminActivity;
-import com.example.game.ui.activities.LoginActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,23 +16,23 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-
 
 public class SupabaseService {
 
     public static String salvarSupabase(Usuario usuario) {
         try {
-            HttpURLConnection conn = getHttpURLConnection(SupabaseConfig.API_URL + "/rest/v1/" + SupabaseConfig.TABLE_NAME, "POST");
-
+            HttpURLConnection conn = getHttpURLConnection(
+                    SupabaseConfig.API_URL + "/rest/v1/" + SupabaseConfig.TABLE_NAME, "POST"
+            );
 
             JSONObject json = new JSONObject();
             json.put("nome", usuario.getNome());
             json.put("email", usuario.getEmail());
             json.put("senha", usuario.getSenha());
             json.put("criado_em", usuario.getDataCriacao());
-            //Depurador
+
+            // Depurador
             Log.d("SUPABASE_JSON", "JSON enviado: " + json.toString());
 
             OutputStream os = conn.getOutputStream();
@@ -44,19 +40,26 @@ public class SupabaseService {
             os.flush();
             os.close();
 
-
             int responseCode = conn.getResponseCode();
             Log.e("Supabase", "Resposta HTTP: " + responseCode);
-            if (responseCode == HttpURLConnection.HTTP_CREATED || responseCode == HttpURLConnection.HTTP_OK) {
-                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+            if (responseCode == HttpURLConnection.HTTP_CREATED
+                    || responseCode == HttpURLConnection.HTTP_OK) {
+
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(conn.getInputStream())
+                );
                 String inputLine;
                 StringBuilder response = new StringBuilder();
+
                 while ((inputLine = in.readLine()) != null) {
                     response.append(inputLine);
                 }
                 in.close();
+
                 Log.d("Supabase", "Resposta corpo: " + response.toString());
                 return response.toString();
+
             } else {
                 return "Erro: " + responseCode;
             }
@@ -68,10 +71,11 @@ public class SupabaseService {
     }
 
     @NonNull
-    private static HttpURLConnection getHttpURLConnection(String API_URL, String POST) throws IOException {
+    private static HttpURLConnection getHttpURLConnection(String API_URL, String POST)
+            throws IOException {
+
         URL url = new URL(API_URL);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
 
         conn.setRequestMethod(POST);
         conn.setRequestProperty("apikey", SupabaseConfig.API_KEY);
@@ -79,31 +83,35 @@ public class SupabaseService {
         conn.setRequestProperty("Content-Type", "application/json");
         conn.setRequestProperty("Prefer", "return=representation");
         conn.setDoOutput(true);
+
         return conn;
     }
 
-
     public static String listarUsuarios() {
         try {
-            URL url = new URL(SupabaseConfig.API_URL + "/rest/v1/" + SupabaseConfig.TABLE_NAME + "?select=*");
+            URL url = new URL(
+                    SupabaseConfig.API_URL + "/rest/v1/" + SupabaseConfig.TABLE_NAME + "?select=*"
+            );
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
 
             conn.setRequestMethod("GET");
             conn.setRequestProperty("apikey", SupabaseConfig.API_KEY);
             conn.setRequestProperty("Authorization", "Bearer " + SupabaseConfig.API_KEY);
 
-
             int responseCode = conn.getResponseCode();
+
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(conn.getInputStream())
+                );
                 String inputLine;
                 StringBuilder response = new StringBuilder();
+
                 while ((inputLine = in.readLine()) != null) {
                     response.append(inputLine);
                 }
-
                 in.close();
+
                 return response.toString();
             } else {
                 return "Erro: " + responseCode;
@@ -114,10 +122,12 @@ public class SupabaseService {
         }
     }
 
-
     public static String atualizarPorEmail(String email, Usuario usuario) {
         try {
-            HttpURLConnection conn = getHttpURLConnection(SupabaseConfig.API_URL + "/rest/v1/" + SupabaseConfig.TABLE_NAME + "?email=eq." + email, "PATCH");
+            HttpURLConnection conn = getHttpURLConnection(
+                    SupabaseConfig.API_URL + "/rest/v1/" + SupabaseConfig.TABLE_NAME + "?email=eq." + email,
+                    "PATCH"
+            );
 
             JSONObject json = new JSONObject();
             json.put("nome", usuario.getNome());
@@ -129,7 +139,9 @@ public class SupabaseService {
             os.close();
 
             int responseCode = conn.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
+
+            if (responseCode == HttpURLConnection.HTTP_OK
+                    || responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
                 return "Usuário atualizado no Supabase.";
             } else {
                 return "Erro Supabase: " + responseCode;
@@ -139,10 +151,10 @@ public class SupabaseService {
         }
     }
 
-
     public static String excluirPorEmail(String email) {
         try {
             int responseCode = getResponseCode(email);
+
             if (responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
                 return "Usuário excluído do Supabase.";
             } else {
@@ -154,7 +166,9 @@ public class SupabaseService {
     }
 
     private static int getResponseCode(String email) throws IOException {
-        URL url = new URL(SupabaseConfig.API_URL + "/rest/v1/" + SupabaseConfig.TABLE_NAME + "?email=eq." + email);
+        URL url = new URL(
+                SupabaseConfig.API_URL + "/rest/v1/" + SupabaseConfig.TABLE_NAME + "?email=eq." + email
+        );
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
         conn.setRequestMethod("DELETE");
@@ -162,11 +176,10 @@ public class SupabaseService {
         conn.setRequestProperty("Authorization", "Bearer " + SupabaseConfig.API_KEY);
         conn.setRequestProperty("Prefer", "return=representation");
 
-        int responseCode = conn.getResponseCode();
-        return responseCode;
+        return conn.getResponseCode();
     }
 
-    //Obtém a instância do SupabaseService
+    // Obtém a instância do SupabaseService
     public static SupabaseService getInstance(AdminActivity adminActivity) {
         return new SupabaseService();
     }
@@ -176,7 +189,9 @@ public class SupabaseService {
 
         try {
             // Monta a URL com filtro por ID
-            URL url = new URL(SupabaseConfig.API_URL + "/rest/v1/" + SupabaseConfig.TABLE_NAME + "?id=eq." + idNecessario);
+            URL url = new URL(
+                    SupabaseConfig.API_URL + "/rest/v1/" + SupabaseConfig.TABLE_NAME + "?id=eq." + idNecessario
+            );
             conn = (HttpURLConnection) url.openConnection();
 
             // Configura os cabeçalhos da requisição
@@ -192,10 +207,10 @@ public class SupabaseService {
             jsonBody.put("nome", usuarioEditado.getNome());
             jsonBody.put("email", usuarioEditado.getEmail());
 
-                // Só atualizará o campo senha se e somente se estiver preenchido
-                if(usuarioEditado.getSenha() != null && !usuarioEditado.getSenha().isEmpty()) {
-                    jsonBody.put("senha", usuarioEditado.getSenha());
-                }
+            // Só atualizará o campo senha se e somente se estiver preenchido
+            if (usuarioEditado.getSenha() != null && !usuarioEditado.getSenha().isEmpty()) {
+                jsonBody.put("senha", usuarioEditado.getSenha());
+            }
 
             // Envia o corpo da requisição
             try (OutputStream os = conn.getOutputStream()) {
@@ -206,34 +221,41 @@ public class SupabaseService {
             // Captura o código de resposta
             int responseCode = conn.getResponseCode();
 
-                // Captura o corpo da resposta (inclusive em caso de erro)
-                BufferedReader in = new BufferedReader(new InputStreamReader(
-                        conn.getErrorStream() != null ? conn.getErrorStream() : conn.getInputStream()
-                ));
-                StringBuilder response = new StringBuilder();
-                String line;
-                while ((line = in.readLine()) != null) {
-                    response.append(line);
-                }
-            in.close();
-                        // Logs para depuração
-                        Log.d("Supabase", "Código HTTP: " + responseCode);
-                        Log.d("Supabase", "Resposta Supabase: " + response.toString());
+            // Captura o corpo da resposta (inclusive em caso de erro)
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(
+                            conn.getErrorStream() != null ? conn.getErrorStream() : conn.getInputStream()
+                    )
+            );
+            StringBuilder response = new StringBuilder();
+            String line;
 
-                return responseCode;
+            while ((line = in.readLine()) != null) {
+                response.append(line);
+            }
+            in.close();
+
+            // Logs para depuração
+            Log.d("Supabase", "Código HTTP: " + responseCode);
+            Log.d("Supabase", "Resposta Supabase: " + response.toString());
+
+            return responseCode;
 
         } catch (JSONException e) {
-                        Log.e("Supabase", "Erro ao montar JSON", e);
-                        throw new RuntimeException("Erro ao montar o JSON para atualização");
+            Log.e("Supabase", "Erro ao montar JSON", e);
+            throw new RuntimeException("Erro ao montar o JSON para atualização");
         } catch (IOException e) {
-                        Log.e("Supabase", "Erro de conexão", e);
-                        throw new RuntimeException("Erro ao atualizar o usuário por ID: " + e.getMessage());
+            Log.e("Supabase", "Erro de conexão", e);
+            throw new RuntimeException("Erro ao atualizar o usuário por ID: " + e.getMessage());
         }
     }
+
     public static Usuario buscarUsuarioPorEmail(String email) {
         try {
             // Monta a URL com filtro por email
-            URL url = new URL(SupabaseConfig.API_URL + "/rest/v1/" + SupabaseConfig.TABLE_NAME + "?email=eq." + email);
+            URL url = new URL(
+                    SupabaseConfig.API_URL + "/rest/v1/" + SupabaseConfig.TABLE_NAME + "?email=eq." + email
+            );
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             // Configura os cabeçalhos da requisição
@@ -244,10 +266,14 @@ public class SupabaseService {
 
             // Lê a resposta
             int responseCode = conn.getResponseCode();
+
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(conn.getInputStream())
+                );
                 StringBuilder response = new StringBuilder();
                 String line;
+
                 while ((line = in.readLine()) != null) {
                     response.append(line);
                 }
@@ -255,6 +281,7 @@ public class SupabaseService {
 
                 // Converte a resposta em JSON
                 JSONArray array = new JSONArray(response.toString());
+
                 if (array.length() > 0) {
                     JSONObject obj = array.getJSONObject(0);
                     return new Usuario(
@@ -272,6 +299,4 @@ public class SupabaseService {
 
         return null; // Retorna null se não encontrar ou der erro
     }
-
-
 }

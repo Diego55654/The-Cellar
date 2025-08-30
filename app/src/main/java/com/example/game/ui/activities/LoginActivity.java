@@ -7,7 +7,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.game.database.AppDatabase;
-import com.example.game.database.SupabaseService;
 import com.example.game.database.UsuarioDAO;
 import com.example.game.databinding.ActivityLoginBinding;
 import com.example.game.models.Usuario;
@@ -33,17 +32,21 @@ public class LoginActivity extends AppCompatActivity {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // Obtém a instância do AppSession
         appSession = (AppSession) getApplication();
 
+        // Verifica se já está logado
         if (appSession.isLoggedIn()) {
             direcionaActivity();
             return;
         }
 
+        // Inicializa o banco de dados
         AppDatabase db = AppDatabase.getDatabase(this);
         usuarioDAO = db.usuarioDao();
 
         binding.btnLogin.setOnClickListener(view -> validarLogin());
+
         binding.btnCadastro.setOnClickListener(view -> {
             Intent intent = new Intent(LoginActivity.this, CadastroActivity.class);
             startActivity(intent);
@@ -54,8 +57,10 @@ public class LoginActivity extends AppCompatActivity {
         String email = binding.etEmail.getText().toString().trim();
         String senha = binding.etSenha.getText().toString().trim();
 
+        // Desabilita o botão para evitar cliques repetidos
         binding.btnLogin.setEnabled(false);
 
+        // Verifica as credenciais do administrador
         if (email.equals(ADMIN_EMAIL) && senha.equals(ADMIN_PASS)) {
             appSession.loginAdmin("Administrador");
             Toast.makeText(this, "Login como administrador!", Toast.LENGTH_SHORT).show();
@@ -64,31 +69,28 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
+        // Executa a consulta numa Thread separada
         executor.execute(() -> {
             try {
-                Usuario usuario = usuarioDAO.getUsuarioByEmail(email);
-
-                if (usuario == null) {
-                    usuario = SupabaseService.buscarUsuarioPorEmail(email);
-                }
-
-                Usuario finalUsuario = usuario;
+                final Usuario usuario = usuarioDAO.getUsuarioByEmail(email);
 
                 runOnUiThread(() -> {
                     binding.btnLogin.setEnabled(true);
 
-                    if (finalUsuario != null &&
-                            finalUsuario.autenticarEmail(email) &&
-                            SenhaUtils.verificarSenha(senha, finalUsuario.getSenha())) {
+                    if (usuario != null) {
+                        if (usuario.autenticarEmail(email) &&
+                                SenhaUtils.verificarSenha(senha, usuario.getSenha())) {
 
-                        appSession.login(finalUsuario.getId(), finalUsuario.getNome(), finalUsuario.getEmail());
-                        Toast.makeText(LoginActivity.this, "Login bem-sucedido!", Toast.LENGTH_SHORT).show();
-                        direcionaActivity();
+                            appSession.login(usuario.getId(), usuario.getNome(), usuario.getEmail());
+                            Toast.makeText(LoginActivity.this, "Login bem-sucedido!", Toast.LENGTH_SHORT).show();
+                            direcionaActivity();
+                        } else {
+                            Toast.makeText(LoginActivity.this, "Email ou senha incorretos!", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
-                        Toast.makeText(LoginActivity.this, "Email ou senha incorretos!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "Usuário não encontrado!", Toast.LENGTH_SHORT).show();
                     }
                 });
-
             } catch (Exception e) {
                 runOnUiThread(() -> {
                     binding.btnLogin.setEnabled(true);

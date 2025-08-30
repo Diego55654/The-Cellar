@@ -16,14 +16,13 @@ import com.example.game.models.Usuario;
 import com.example.game.recycler.UsuarioAdapter;
 import com.example.game.utils.SenhaUtils;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 
 public class AdminActivity extends AppCompatActivity {
 
@@ -31,6 +30,7 @@ public class AdminActivity extends AppCompatActivity {
     private UsuarioAdapter usuarioAdapter;
     private AppDatabase db;
     private SupabaseService su;
+
     private final Executor executor = Executors.newSingleThreadExecutor();
     private final List<Usuario> listaUsuarios = new ArrayList<>();
 
@@ -74,7 +74,10 @@ public class AdminActivity extends AppCompatActivity {
 
             @Override
             public void onAdicionarClick(Usuario usuario) {
-                Toast.makeText(AdminActivity.this, "Usuário " + usuario.getNome() + " selecionado!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminActivity.this,
+                        "Usuário " + usuario.getNome() + " selecionado!",
+                        Toast.LENGTH_SHORT
+                ).show();
             }
         });
         binding.recyclerViewUsuarios.setAdapter(usuarioAdapter);
@@ -91,9 +94,9 @@ public class AdminActivity extends AppCompatActivity {
                 usuarioEditado = null;
                 cancelarEdicao();
                 binding.btnAdicionarUsuario.setText("Adicionar Usuário");
-                binding.btnAtualizarUsuario.setText("Atualizar Usuario");
+                binding.btnAtualizarUsuario.setText("Atualizar Usuário");
             } else {
-                processarnovosUsuario();
+                processarNovosUsuario();
             }
         });
 
@@ -101,54 +104,64 @@ public class AdminActivity extends AppCompatActivity {
             if (usuarioEditado != null) {
                 processarEdicaoUsuario();
             } else {
-                Toast.makeText(this, "Selecione um usuário para atualizar clicando em 'Editar'", Toast.LENGTH_LONG).show();
+                Toast.makeText(this,
+                        "Selecione um usuário para atualizar clicando em 'Editar'",
+                        Toast.LENGTH_LONG
+                ).show();
             }
         });
     }
 
     private void entrarModoEdicao(Usuario usuario) {
-        //Salva o usuário selecionado
-                    idNecessario = usuario.getId();
-                    emailOriginal = usuario.getEmail();
-                    usuarioEditado = usuario;
-                    binding.nomeUsuario.setText(usuario.getNome());
-                    binding.emailUsuario.setText(usuario.getEmail());
-                    binding.senhaUsuario.setText(""); //Campo vazio
+        // Salva o usuário selecionado
+        idNecessario = usuario.getId();
+        emailOriginal = usuario.getEmail();
+        usuarioEditado = usuario;
 
-        // Altera os texto dos botões
-            binding.btnAdicionarUsuario.setText("Cancelar Edição");
-            binding.btnAtualizarUsuario.setText("Salvar Alterações");
+        binding.nomeUsuario.setText(usuario.getNome());
+        binding.emailUsuario.setText(usuario.getEmail());
+        binding.senhaUsuario.setText(""); // Campo vazio
+
+        // Altera os textos dos botões
+        binding.btnAdicionarUsuario.setText("Cancelar Edição");
+        binding.btnAtualizarUsuario.setText("Salvar Alterações");
 
         Toast.makeText(this, "Editando: " + usuario.getNome(), Toast.LENGTH_SHORT).show();
     }
 
-    private void processarnovosUsuario() {
-            String nome = binding.nomeUsuario.getText().toString().trim();
-            String email = binding.emailUsuario.getText().toString().trim();
-            String senha = binding.senhaUsuario.getText().toString().trim();
+    private void processarNovosUsuario() {
+        String nome = binding.nomeUsuario.getText().toString().trim();
+        String email = binding.emailUsuario.getText().toString().trim();
+        String senha = binding.senhaUsuario.getText().toString().trim();
 
-            CadastroActivity.validarUsuarioCompleto(nome, email, senha, db, -1, false,
-                    new CadastroActivity.ValidationCallback() {
-                        @Override
-                        public void onSuccess() {
-                            adicionarUsuario(nome, email, senha);
-                        }
+        CadastroActivity.validarUsuarioCompleto(
+                nome, email, senha, db, -1, false,
+                new CadastroActivity.ValidationCallback() {
+                    @Override
+                    public void onSuccess() {
+                        adicionarUsuario(nome, email, senha);
+                    }
 
-                        @Override
-                        public void onError(String mensagem) {
-                            runOnUiThread(() -> {
-                                Toast.makeText(AdminActivity.this, mensagem, Toast.LENGTH_LONG).show();
-                                reabilitarBotoes();
-                            });
-                        }
-                    });
-        }
+                    @Override
+                    public void onError(String mensagem) {
+                        runOnUiThread(() -> {
+                            Toast.makeText(AdminActivity.this,
+                                    mensagem, Toast.LENGTH_LONG
+                            ).show();
+                            reabilitarBotoes();
+                        });
+                    }
+                }
+        );
+    }
+
     private void processarEdicaoUsuario() {
         String nome = binding.nomeUsuario.getText().toString().trim();
         String email = binding.emailUsuario.getText().toString().trim();
         String senha = binding.senhaUsuario.getText().toString().trim();
 
-        CadastroActivity.validarUsuarioCompleto(nome, email, senha, db, usuarioEditado.getId(), true,
+        CadastroActivity.validarUsuarioCompleto(
+                nome, email, senha, db, usuarioEditado.getId(), true,
                 new CadastroActivity.ValidationCallback() {
                     @Override
                     public void onSuccess() {
@@ -158,15 +171,15 @@ public class AdminActivity extends AppCompatActivity {
                     @Override
                     public void onError(String mensagem) {
                         runOnUiThread(() -> {
-                            Toast.makeText(AdminActivity.this, mensagem, Toast.LENGTH_LONG).show();
+                            Toast.makeText(AdminActivity.this,
+                                    mensagem, Toast.LENGTH_LONG
+                            ).show();
                             reabilitarBotoes();
                         });
                     }
-                });
+                }
+        );
     }
-
-
-
 
     private void adicionarUsuario(String nome, String email, String senha) {
         executor.execute(() -> {
@@ -174,19 +187,25 @@ public class AdminActivity extends AppCompatActivity {
                 String senhaSegura = SenhaUtils.gerarSenhaSegura(senha);
                 Usuario novoUsuario = new Usuario(nome, email, senhaSegura);
 
-                db.usuarioDao().inserir(novoUsuario); //Insere no ROOM
+                db.usuarioDao().inserir(novoUsuario); // Insere no ROOM
                 SupabaseService.salvarSupabase(novoUsuario); // Insere no SUPABASE
 
                 runOnUiThread(() -> {
                     carregarUsuarios();
                     limparCampos();
                     reabilitarBotoes();
-                    Toast.makeText(this, "Usuário " + nome + " adicionado com sucesso!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this,
+                            "Usuário " + nome + " adicionado com sucesso!",
+                            Toast.LENGTH_SHORT
+                    ).show();
                 });
 
             } catch (Exception e) {
                 runOnUiThread(() -> {
-                    Toast.makeText(this, "Erro ao adicionar: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this,
+                            "Erro ao adicionar: " + e.getMessage(),
+                            Toast.LENGTH_SHORT
+                    ).show();
                     reabilitarBotoes();
                 });
             }
@@ -196,33 +215,42 @@ public class AdminActivity extends AppCompatActivity {
     private void atualizarUsuario(String nome, String email, String senha) {
         executor.execute(() -> {
             try {
-
                 usuarioEditado.setNome(nome);
                 usuarioEditado.setEmail(email);
 
-                //Verifica o campo antes de adicionar
+                // Verifica o campo antes de adicionar
                 if (!senha.isEmpty()) {
                     String senhaSegura = SenhaUtils.gerarSenhaSegura(senha);
                     usuarioEditado.setSenha(senhaSegura);
                 }
 
                 int codigo = SupabaseService.atualizarUsuarioPorId(idNecessario, usuarioEditado);
+
                 if (codigo == 200 || codigo == 204) {
                     db.usuarioDao().atualizarUsuario(usuarioEditado);
                     runOnUiThread(() -> {
                         carregarUsuarios();
                         cancelarEdicao();
-                        Toast.makeText(this, "Usuário atualizado com sucesso!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this,
+                                "Usuário atualizado com sucesso!",
+                                Toast.LENGTH_SHORT
+                        ).show();
                     });
                 } else {
                     runOnUiThread(() -> {
-                        Toast.makeText(this, "Erro Supabase: " + codigo, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this,
+                                "Erro Supabase: " + codigo,
+                                Toast.LENGTH_SHORT
+                        ).show();
                         reabilitarBotoes();
                     });
                 }
             } catch (Exception e) {
                 runOnUiThread(() -> {
-                    Toast.makeText(this, "Erro ao atualizar: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this,
+                            "Erro ao atualizar: " + e.getMessage(),
+                            Toast.LENGTH_SHORT
+                    ).show();
                     reabilitarBotoes();
                 });
             }
@@ -277,7 +305,6 @@ public class AdminActivity extends AppCompatActivity {
         });
     }
 
-
     private void excluirUsuario(Usuario usuario) {
         new AlertDialog.Builder(this)
                 .setTitle("Excluir usuário")
@@ -288,16 +315,25 @@ public class AdminActivity extends AppCompatActivity {
                         SupabaseService.excluirPorEmail(usuario.getEmail());
 
                         runOnUiThread(() -> {
-                            if (usuarioEditado != null && usuarioEditado.getId() == usuario.getId()) {
+                            if (usuarioEditado != null
+                                    && usuarioEditado.getId() == usuario.getId()) {
                                 cancelarEdicao();
                             }
 
                             carregarUsuarios();
-                            Toast.makeText(this, "Usuário " + usuario.getNome() + " excluído!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this,
+                                    "Usuário " + usuario.getNome() + " excluído!",
+                                    Toast.LENGTH_SHORT
+                            ).show();
                         });
 
                     } catch (Exception e) {
-                        runOnUiThread(() -> Toast.makeText(this, "Erro ao excluir: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                        runOnUiThread(() ->
+                                Toast.makeText(this,
+                                        "Erro ao excluir: " + e.getMessage(),
+                                        Toast.LENGTH_SHORT
+                                ).show()
+                        );
                     }
                 }))
                 .setNegativeButton("Não", null)

@@ -1,5 +1,6 @@
 package com.example.game.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -32,7 +33,6 @@ public class CadastroActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         binding = ActivityCadastroBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -48,15 +48,12 @@ public class CadastroActivity extends AppCompatActivity {
 
         binding.btnCadastrar.setEnabled(false);
 
-        // Usa a função estática
         validarDadosUsuario(nome, email, senha, false, new ValidationCallback() {
             @Override
             public void onSuccess() {
-                // Se validação passou, verifica email duplicado
                 verificarEmailExistente(email, db, -1, new ValidationCallback() {
                     @Override
                     public void onSuccess() {
-                        // Email não existe, pode cadastrar
                         cadastrarUsuario(nome, email, senha);
                     }
 
@@ -86,7 +83,6 @@ public class CadastroActivity extends AppCompatActivity {
                 SupabaseService.salvarSupabase(novoUsuario);
 
                 runOnUiThread(this::exibirSucesso);
-
             } catch (Exception e) {
                 runOnUiThread(() -> exibirErro("Erro ao cadastrar: " + e.getMessage()));
             }
@@ -95,11 +91,7 @@ public class CadastroActivity extends AppCompatActivity {
 
     // ========== MÉTODOS ESTÁTICOS PARA REUTILIZAÇÃO ==========
 
-    /**
-     * Valida os dados básicos do usuário (nome, email, senha)
-     */
     public static void validarDadosUsuario(String nome, String email, String senha, boolean isUpdate, ValidationCallback callback) {
-        // Validação de campos vazios
         if (nome.isEmpty() || email.isEmpty()) {
             callback.onError("Nome e email são obrigatórios!");
             return;
@@ -110,13 +102,11 @@ public class CadastroActivity extends AppCompatActivity {
             return;
         }
 
-        // Validação do formato do email
         if (!Usuario.ValidarEmail(email)) {
             callback.onError("Formato de email inválido. O email deve conter @ e um domínio válido (ex: usuario@email.com).");
             return;
         }
 
-        // Validação da força da senha (só se foi informada)
         if (!senha.isEmpty() && !Usuario.ValidarSenha(senha)) {
             callback.onError("Senha inválida! A senha deve conter no mínimo 8 caracteres, " +
                     "incluindo pelo menos uma letra maiúscula, uma letra minúscula e um número.");
@@ -126,9 +116,6 @@ public class CadastroActivity extends AppCompatActivity {
         callback.onSuccess();
     }
 
-    /**
-     * Verifica se um email já existe no banco de dados
-     */
     public static void verificarEmailExistente(String email, AppDatabase db, int usuarioAtualId, ValidationCallback callback) {
         Executor executor = Executors.newSingleThreadExecutor();
 
@@ -137,7 +124,6 @@ public class CadastroActivity extends AppCompatActivity {
                 Usuario usuarioExistente = db.usuarioDao().getUsuarioByEmail(email);
 
                 if (usuarioExistente != null) {
-                    // Se é um update e o email pertence ao próprio usuário, não há problema
                     if (usuarioAtualId != -1 && usuarioExistente.getId() == usuarioAtualId) {
                         callback.onSuccess();
                     } else {
@@ -146,23 +132,16 @@ public class CadastroActivity extends AppCompatActivity {
                 } else {
                     callback.onSuccess();
                 }
-
             } catch (Exception e) {
                 callback.onError("Erro ao verificar email: " + e.getMessage());
             }
         });
     }
 
-    /**
-     * Valida usuário completo (dados + email único)
-     * Combina validarDadosUsuario() + verificarEmailExistente()
-     */
     public static void validarUsuarioCompleto(String nome, String email, String senha, AppDatabase db, int usuarioAtualId, boolean isUpdate, ValidationCallback callback) {
-
         validarDadosUsuario(nome, email, senha, isUpdate, new ValidationCallback() {
             @Override
             public void onSuccess() {
-                // Se dados são válidos, verifica email duplicado
                 verificarEmailExistente(email, db, usuarioAtualId, callback);
             }
 
@@ -187,7 +166,10 @@ public class CadastroActivity extends AppCompatActivity {
                 .setCancelable(false)
                 .setPositiveButton("Ok", (dialogInterface, i) -> {
                     dialogInterface.dismiss();
-                    finish();
+                    //Envia à tela de Login logo após o Cadastro
+                    Intent intent = new Intent(CadastroActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    finish(); //fecha a tela de cadastro
                 })
                 .create();
 

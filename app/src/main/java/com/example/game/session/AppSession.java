@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.SharedPreferences;
 
 public class AppSession extends Application {
+
     private static final String preferences_NAME = "user_session";
     private static final String KEY_USER_ID = "user_id";
     private static final String KEY_USER_NAME = "user_name";
@@ -42,79 +43,80 @@ public class AppSession extends Application {
             isAdmin = preferences.getBoolean(KEY_IS_ADMIN, false);
 
             // Se os dados estiverem corrompidos, realiza logout
-                if (userId == -1 || userName == null || userEmail == null) {
-                    logout();
-                }
+            if (userId == -1 || userName == null || userEmail == null) {
+                logout();
+            }
         }
     }
 
     // Realiza login para usuários comuns
     public void login(int userId, String userName, String userEmail) {
-            this.userId = userId;
-            this.userName = userName;
-            this.userEmail = userEmail;
-            this.isAdmin = false;
-            this.isLoggedIn = true;
+        this.userId = userId;
+        this.userName = userName;
+        this.userEmail = userEmail;
+        this.isAdmin = false;
+        this.isLoggedIn = true;
 
-                    salvarSessao();
+        salvarSessao();
     }
 
     // Login exclusivo para administradores (não possuem ID fixo)
     public void loginAdmin(String adminName) {
-            this.userId = -1; // Admin não tem ID no banco
-            this.userName = adminName;
-            this.userEmail = "admin@system.com";
-            this.isAdmin = true;
-            this.isLoggedIn = true;
+        this.userId = -1; // Admin não tem ID no banco
+        this.userName = adminName;
+        this.userEmail = "admin@system.com";
+        this.isAdmin = true;
+        this.isLoggedIn = true;
 
-                salvarSessao();
+        salvarSessao();
     }
 
     // Salva dados da sessão no SharedPreferences
-
     private void salvarSessao() {
-        try{
+        try {
             SharedPreferences.Editor editor = preferences.edit();
             editor.putBoolean(KEY_IS_LOGGED_IN, isLoggedIn);
             editor.putInt(KEY_USER_ID, userId != null ? userId : -1);
             editor.putString(KEY_USER_NAME, userName);
             editor.putString(KEY_USER_EMAIL, userEmail);
             editor.putBoolean(KEY_IS_ADMIN, isAdmin);
-
-                editor.apply();
-        } catch(Exception e) {
-            e.printStackTrace(); //Em caso de erro, não interrompe o programa
+            editor.apply();
+        } catch (Exception e) {
+            e.printStackTrace(); // Em caso de erro, não interrompe o programa
         }
     }
 
     // Limpa a sessão e SharedPreferences ao realizar logout
     public void logout() {
-            this.userId = null;
-            this.userName = null;
-            this.userEmail = null;
-            this.isAdmin = false;
-            this.isLoggedIn = false;
+        this.userId = null;
+        this.userName = null;
+        this.userEmail = null;
+        this.isAdmin = false;
+        this.isLoggedIn = false;
 
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.clear();
-                editor.apply();
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
+        editor.apply();
     }
 
     // Métodos para recuperar os dados da sessão
     public Integer getUserId() {
         return userId;
     }
+
     public String getUserName() {
         return userName;
     }
+
     public String getUserEmail() {
         return userEmail;
     }
+
     public boolean isAdmin() {
         return isAdmin;
     }
+
     public boolean isLoggedIn() {
         return isLoggedIn;
     }
-
 }

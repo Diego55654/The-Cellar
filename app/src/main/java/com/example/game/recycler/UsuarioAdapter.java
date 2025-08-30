@@ -20,7 +20,7 @@ public class UsuarioAdapter extends RecyclerView.Adapter<UsuarioViewHolder> {
     public interface OnUsuarioClickListener {
         void onEditarClick(Usuario usuario);
         void onExcluirClick(Usuario usuario);
-        void onAdicionarClick(Usuario usuario); // Assuming this is used elsewhere
+        void onAdicionarClick(Usuario usuario); // Supondo que seja usado em outro lugar
     }
 
     public UsuarioAdapter(List<Usuario> usuarios, OnUsuarioClickListener listener) {
@@ -31,7 +31,8 @@ public class UsuarioAdapter extends RecyclerView.Adapter<UsuarioViewHolder> {
     @NonNull
     @Override
     public UsuarioViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_usuario, parent, false);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_usuario, parent, false);
         return new UsuarioViewHolder(view);
     }
 

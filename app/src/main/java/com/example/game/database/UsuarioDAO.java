@@ -1,6 +1,5 @@
 package com.example.game.database;
 
-
 import androidx.room.*;
 
 import com.example.game.models.Usuario;
@@ -22,8 +21,10 @@ public interface UsuarioDAO {
     // Busca o usuário pelo e-mail
     @Query("SELECT * FROM usuarios WHERE email = :email LIMIT 1")
     Usuario getUsuarioByEmail(String email);
+
     @Query("SELECT * FROM usuarios")
     List<Usuario> getAll();
+
     @Query("UPDATE usuarios SET nome = :nome, senha = :senha WHERE email = :email")
     void atualizarUsuarioPorEmail(String nome, String senha, String email);
 
@@ -38,5 +39,4 @@ public interface UsuarioDAO {
 
     @Update
     int atualizarUsuario(Usuario usuario);
-
 }

@@ -9,12 +9,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.game.R;
 
 public class UsuarioViewHolder extends RecyclerView.ViewHolder {
+
     public TextView txtNome;
     public TextView txtEmail;
     public Button btnEditar;
     public Button btnExcluir;
-
-
 
     public UsuarioViewHolder(View itemView) {
         super(itemView);

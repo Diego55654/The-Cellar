@@ -1,21 +1,21 @@
 package com.example.game.utils;
 
 import android.os.Build;
+import android.util.Base64;
 
 import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.security.SecureRandom;
-import android.util.Base64;
+import java.security.spec.InvalidKeySpecException;
+
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
 public class SenhaUtils {
 
-
     // Número de interações que o hash faz com o código
     private static final int ITERATIONS = 10000;
 
-    // 256bits usado
+    // 256 bits usados
     private static final int KEY_LENGTH = 256;
 
     // Algoritmo usado: PBKDF2
@@ -41,7 +41,12 @@ public class SenhaUtils {
     // Gera o hash (mistura senha normal + o salt)
     public static String hashPassword(String password, String salt) {
         try {
-            PBEKeySpec spec = new PBEKeySpec(password.toCharArray(), salt.getBytes(), ITERATIONS, KEY_LENGTH);
+            PBEKeySpec spec = new PBEKeySpec(
+                    password.toCharArray(),
+                    salt.getBytes(),
+                    ITERATIONS,
+                    KEY_LENGTH
+            );
             SecretKeyFactory factory = SecretKeyFactory.getInstance(ALGORITHM);
             byte[] hash = factory.generateSecret(spec).getEncoded();
             return encodeToBase64(hash);
@@ -63,9 +68,9 @@ public class SenhaUtils {
         if (parts.length != 2) {
             return false;
         }
+
         String salt = parts[0];
         String hashOfInput = hashPassword(inputPassword, salt);
         return hashOfInput.equals(parts[1]);
     }
 }
-

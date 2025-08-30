@@ -14,8 +14,9 @@ import com.example.game.databinding.ActivityMainBinding;
 import com.example.game.session.AppSession;
 
 public class MainActivity extends AppCompatActivity {
+
     private ActivityMainBinding binding; // ViewBinding
-    private AppSession appSession; // Gerenciador de sessão do usuário
+    private AppSession appSession;       // Gerenciador de sessão do usuário
 
     // Verifica a permanência do usuário quando a Activity é executada
     @Override
@@ -47,38 +48,37 @@ public class MainActivity extends AppCompatActivity {
 
         // Redireciona para o site do jogo ao clicar no botão "Entrar"
         binding.btnEntrar.setOnClickListener(view -> {
-            String url = "https://github.com/Diego55654/The-Cellar"; //Teste: aqui em breve vai entrar a URL do game
+            String url = "https://github.com/Diego55654/The-Cellar"; // Em breve: URL do game
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(intent);
         });
 
-        /* Botao que chama um metodo que encerra a sessao atual e
-         outro que encaminha para LoginActivity, respectivamente */
+        // Botão que encerra a sessão e redireciona para LoginActivity
         binding.btnSair.setOnClickListener(view -> {
             appSession.logout();
             redirecionaLogin();
         });
     }
 
-    // Redireciona para a tela de login, eliminando as telas anteriores.
+    // Redireciona para a tela de login, eliminando as telas anteriores
     private void redirecionaLogin() {
         Intent intent = new Intent(this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
     }
-    //  A interface com informações do usuário logado -- [Em desenvolvimento]
+
+    // Interface com informações do usuário logado -- [Em desenvolvimento]
     private void setupUserInterface() {
         String welcomeMessage = "Bem-vindo, " + appSession.getUserName() + "!";
 
-        // Se for admin, pode liberar funcionalidades extras
         if (appSession.isAdmin()) {
             // Exemplo: Adicionar botões administrativos
-
         }
     }
+
     // Encerra a sessão do usuário e redireciona para a tela de login
-    private void Sair() {
+    private void sair() {
         appSession.logout();
         redirecionaLogin();
     }
