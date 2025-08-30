@@ -23,18 +23,21 @@ public class CadastroActivity extends AppCompatActivity {
     private AppDatabase db;
     private final Executor executor = Executors.newSingleThreadExecutor();
 
+    // Callback para comunicação com outras Activities
+    public interface ValidationCallback {
+        void onSuccess();
+        void onError(String mensagem);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Inflando o layout com View Binding
         binding = ActivityCadastroBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Inicializar banco de dados
         db = AppDatabase.getDatabase(this);
-        
-        // Ação do botão de cadastro com validações
+
         binding.btnCadastrar.setOnClickListener(view -> validarCadastro());
     }
 
@@ -43,53 +46,45 @@ public class CadastroActivity extends AppCompatActivity {
         String email = binding.cadEmail.getText().toString().trim();
         String senha = binding.cadSenha.getText().toString().trim();
 
-                // Validação de campos vazios
-                if (nome.isEmpty() || email.isEmpty() || senha.isEmpty()) {
-                    exibirErro("Por favor, preencha todos os campos!");
-                    return;
-                }
+        binding.btnCadastrar.setEnabled(false);
 
-                // Validação do formato do email
-                if (!Usuario.ValidarEmail(email)) {
-                    exibirErro("Formato de email inválido. O email deve conter @ e um domínio válido (ex: usuario@email.com).");
-                    return;
-                }
-
-                // Validação da força da senha
-                if (!Usuario.ValidarSenha(senha)) {
-                    exibirErro("Senha inválida! A senha deve conter no mínimo 8 caracteres, " +
-                            "incluindo pelo menos uma letra maiúscula, uma letra minúscula e um número.");
-                    return;
-                }
-
-                // Desabilita o botão após as autenticações passarem
-                binding.btnCadastrar.setEnabled(false);
-
-        //Verifica se email já existe no banco
-        executor.execute(() -> {
-            try {
-                // Verifica se email já está cadastrado
-                Usuario usuarioExistente = db.usuarioDao().getUsuarioByEmail(email);
-
-                    if (usuarioExistente != null) {
-                        runOnUiThread(() -> exibirErro("Este email já está cadastrado!"));
-                        return;
+        // Usa a função estática
+        validarDadosUsuario(nome, email, senha, false, new ValidationCallback() {
+            @Override
+            public void onSuccess() {
+                // Se validação passou, verifica email duplicado
+                verificarEmailExistente(email, db, -1, new ValidationCallback() {
+                    @Override
+                    public void onSuccess() {
+                        // Email não existe, pode cadastrar
+                        cadastrarUsuario(nome, email, senha);
                     }
 
-                // Criptografar senha e cria usuário
+                    @Override
+                    public void onError(String mensagem) {
+                        runOnUiThread(() -> exibirErro(mensagem));
+                    }
+                });
+            }
+
+            @Override
+            public void onError(String mensagem) {
+                runOnUiThread(() -> exibirErro(mensagem));
+            }
+        });
+    }
+
+    private void cadastrarUsuario(String nome, String email, String senha) {
+        executor.execute(() -> {
+            try {
                 String senhaCriptografada = SenhaUtils.gerarSenhaSegura(senha);
-
-
-                // Usuario : (nome, email, senha)
                 Usuario novoUsuario = new Usuario(nome, email, senhaCriptografada);
-                //Depuração simples
-                Log.d("DEBUB", "DATA DE CRIAÇÃO" + novoUsuario.getDataCriacao());
 
-                // Salvar no banco de dados
+                Log.d("DEBUG", "DATA DE CRIAÇÃO: " + novoUsuario.getDataCriacao());
+
                 db.usuarioDao().inserir(novoUsuario);
-                
-                //Salvar no Supabase
                 SupabaseService.salvarSupabase(novoUsuario);
+
                 runOnUiThread(this::exibirSucesso);
 
             } catch (Exception e) {
@@ -98,15 +93,93 @@ public class CadastroActivity extends AppCompatActivity {
         });
     }
 
-    //Funcao para mostrar que algo deu errado
+    // ========== MÉTODOS ESTÁTICOS PARA REUTILIZAÇÃO ==========
+
+    /**
+     * Valida os dados básicos do usuário (nome, email, senha)
+     */
+    public static void validarDadosUsuario(String nome, String email, String senha, boolean isUpdate, ValidationCallback callback) {
+        // Validação de campos vazios
+        if (nome.isEmpty() || email.isEmpty()) {
+            callback.onError("Nome e email são obrigatórios!");
+            return;
+        }
+
+        if (!isUpdate && senha.isEmpty()) {
+            callback.onError("Senha é obrigatória!");
+            return;
+        }
+
+        // Validação do formato do email
+        if (!Usuario.ValidarEmail(email)) {
+            callback.onError("Formato de email inválido. O email deve conter @ e um domínio válido (ex: usuario@email.com).");
+            return;
+        }
+
+        // Validação da força da senha (só se foi informada)
+        if (!senha.isEmpty() && !Usuario.ValidarSenha(senha)) {
+            callback.onError("Senha inválida! A senha deve conter no mínimo 8 caracteres, " +
+                    "incluindo pelo menos uma letra maiúscula, uma letra minúscula e um número.");
+            return;
+        }
+
+        callback.onSuccess();
+    }
+
+    /**
+     * Verifica se um email já existe no banco de dados
+     */
+    public static void verificarEmailExistente(String email, AppDatabase db, int usuarioAtualId, ValidationCallback callback) {
+        Executor executor = Executors.newSingleThreadExecutor();
+
+        executor.execute(() -> {
+            try {
+                Usuario usuarioExistente = db.usuarioDao().getUsuarioByEmail(email);
+
+                if (usuarioExistente != null) {
+                    // Se é um update e o email pertence ao próprio usuário, não há problema
+                    if (usuarioAtualId != -1 && usuarioExistente.getId() == usuarioAtualId) {
+                        callback.onSuccess();
+                    } else {
+                        callback.onError("Este email já está cadastrado!");
+                    }
+                } else {
+                    callback.onSuccess();
+                }
+
+            } catch (Exception e) {
+                callback.onError("Erro ao verificar email: " + e.getMessage());
+            }
+        });
+    }
+
+    /**
+     * Valida usuário completo (dados + email único)
+     * Combina validarDadosUsuario() + verificarEmailExistente()
+     */
+    public static void validarUsuarioCompleto(String nome, String email, String senha, AppDatabase db, int usuarioAtualId, boolean isUpdate, ValidationCallback callback) {
+
+        validarDadosUsuario(nome, email, senha, isUpdate, new ValidationCallback() {
+            @Override
+            public void onSuccess() {
+                // Se dados são válidos, verifica email duplicado
+                verificarEmailExistente(email, db, usuarioAtualId, callback);
+            }
+
+            @Override
+            public void onError(String mensagem) {
+                callback.onError(mensagem);
+            }
+        });
+    }
+
+    // ========== MÉTODOS PRIVADOS DA ACTIVITY ==========
+
     private void exibirErro(String mensagem) {
         Toast.makeText(this, mensagem, Toast.LENGTH_SHORT).show();
-
-        // reabilita o botão para novas tentativas
         binding.btnCadastrar.setEnabled(true);
     }
 
-    //Funcao para mostrar que tudo funcionou corretamente
     private void exibirSucesso() {
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle("Sucesso")
@@ -114,18 +187,17 @@ public class CadastroActivity extends AppCompatActivity {
                 .setCancelable(false)
                 .setPositiveButton("Ok", (dialogInterface, i) -> {
                     dialogInterface.dismiss();
-                        finish(); // Volta para a activity anterior
+                    finish();
                 })
                 .create();
 
         dialog.show();
 
-        // Cria um Delay após o alerta de sucesso
         new Handler().postDelayed(() -> {
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                        finish();
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+                finish();
             }
-        }, 3000); // 3 segundos de Delay
+        }, 3000);
     }
 }
