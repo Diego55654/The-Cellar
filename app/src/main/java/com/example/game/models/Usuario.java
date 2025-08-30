@@ -1,8 +1,6 @@
 package com.example.game.models;
 
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
+import androidx.room.*;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -108,9 +106,18 @@ import java.util.regex.Pattern;
     public void setDataCriacao(String dataCriacao) {
         this.dataCriacao = dataCriacao;
     }
-
     // Método para verificar se o email digitado está correto
     public boolean autenticarEmail(String emailDigitado) {
         return this.email != null && this.email.equalsIgnoreCase(emailDigitado);
     }
+    //CONSTRUTOR PARA RECEBER/CARREGAR APENAS OS USUARIOS DO BD REMOTO (id)
+    @Ignore
+    public Usuario(int id, String nome, String email, String senha, String dataCriacao) {
+        this.id = id;
+        this.nome = nome;
+        this.email = email;
+        this.senha = senha;
+        this.dataCriacao = dataCriacao;
+    }
+
 }
