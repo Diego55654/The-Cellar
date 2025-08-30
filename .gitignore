@@ -2,3 +2,6 @@
 .gradle/
 gradle/
 
+.gradle/8.11.1/fileHashes/fileHashes.bin
+/.idea
+/.idea
