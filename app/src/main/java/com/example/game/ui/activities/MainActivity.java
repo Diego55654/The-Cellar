@@ -5,6 +5,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,11 +36,15 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(binding.getRoot());
 
+        WebView webView = binding.webView;
+        webView.getSettings().setJavaScriptEnabled(true); // Para uso de Javascript
+        webView.setWebViewClient(new WebViewClient()); //Mantém navegação interna
+
         // Obtém a sessão do usuário
         appSession = (AppSession) getApplication();
 
         // Verifica se está logado; se não, redireciona para a tela de login
-        if (!appSession.isLoggedIn()) {
+        if (appSession == null || !appSession.isLoggedIn()){
             redirecionaLogin();
             return;
         }
@@ -48,16 +54,14 @@ public class MainActivity extends AppCompatActivity {
 
         // Redireciona para o site do jogo ao clicar no botão "Entrar"
         binding.btnEntrar.setOnClickListener(view -> {
-            String url = "https://github.com/Diego55654/The-Cellar"; // Em breve: URL do game
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            //Link com o jogo.
+            binding.webView.loadUrl("https://carlosdk5.github.io/Gamer-of-the-Cellar/Game%201.V/index.html");
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(webView.getUrl()));
             startActivity(intent);
         });
 
         // Botão que encerra a sessão e redireciona para LoginActivity
-        binding.btnSair.setOnClickListener(view -> {
-            appSession.logout();
-            redirecionaLogin();
-        });
+        binding.btnSair.setOnClickListener(view -> sair()); //Reescrita a chamada da função sair em forma de lambda
     }
 
     // Redireciona para a tela de login, eliminando as telas anteriores
@@ -71,10 +75,6 @@ public class MainActivity extends AppCompatActivity {
     // Interface com informações do usuário logado -- [Em desenvolvimento]
     private void setupUserInterface() {
         String welcomeMessage = "Bem-vindo, " + appSession.getUserName() + "!";
-
-        if (appSession.isAdmin()) {
-            // Exemplo: Adicionar botões administrativos
-        }
     }
 
     // Encerra a sessão do usuário e redireciona para a tela de login

@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.example.game.models.Usuario;
 import com.example.game.ui.activities.AdminActivity;
+import com.example.game.utils.SenhaUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -299,4 +300,58 @@ public class SupabaseService {
 
         return null; // Retorna null se não encontrar ou der erro
     }
+    public static Usuario autenticarUsuarioRemoto(String email, String senha) {
+        try {
+            HttpURLConnection conn = (HttpURLConnection) new URL(
+                    SupabaseConfig.API_URL + "/rest/v1/"
+                            + SupabaseConfig.TABLE_NAME
+                            + "?email=eq." + email
+            ).openConnection();
+
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("apikey", SupabaseConfig.API_KEY);
+            conn.setRequestProperty("Authorization", "Bearer " + SupabaseConfig.API_KEY);
+            conn.setRequestProperty("Content-Type", "application/json");
+
+            if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                return null;
+            }
+
+            try (BufferedReader in = new BufferedReader(
+                    new InputStreamReader(conn.getInputStream()))) {
+
+                StringBuilder response = new StringBuilder();
+                String line;
+
+                while ((line = in.readLine()) != null) {
+                    response.append(line);
+                }
+
+                JSONArray array = new JSONArray(response.toString());
+                if (array.length() == 0) {
+                    return null;
+                }
+
+                JSONObject obj = array.getJSONObject(0);
+                String senhaHash = obj.getString("senha");
+
+                if (!SenhaUtils.verificarSenha(senha, senhaHash)) {
+                    return null;
+                }
+
+                return new Usuario(
+                        obj.getInt("id"),
+                        obj.getString("nome"),
+                        obj.getString("email"),
+                        senhaHash,
+                        obj.optString("criado_em", null)
+                );
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
 }
