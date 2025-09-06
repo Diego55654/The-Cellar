@@ -12,6 +12,7 @@ import com.example.game.databinding.ActivityLoginBinding;
 import com.example.game.models.Usuario;
 import com.example.game.session.AppSession;
 import com.example.game.utils.SenhaUtils;
+import com.example.game.database.SupabaseService;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -32,22 +33,19 @@ public class LoginActivity extends AppCompatActivity {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Obtém a instância do AppSession
         appSession = (AppSession) getApplication();
 
-        // Verifica se já está logado
         if (appSession.isLoggedIn()) {
             direcionaActivity();
             return;
         }
 
-        // Inicializa o banco de dados
         AppDatabase db = AppDatabase.getDatabase(this);
         usuarioDAO = db.usuarioDao();
 
-        binding.btnLogin.setOnClickListener(view -> validarLogin());
+        binding.btnLogin.setOnClickListener(v -> validarLogin());
 
-        binding.btnCadastro.setOnClickListener(view -> {
+        binding.btnCadastro.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, CadastroActivity.class);
             startActivity(intent);
         });
@@ -57,10 +55,13 @@ public class LoginActivity extends AppCompatActivity {
         String email = binding.etEmail.getText().toString().trim();
         String senha = binding.etSenha.getText().toString().trim();
 
-        // Desabilita o botão para evitar cliques repetidos
+        if (email.isEmpty() || senha.isEmpty()) {
+            Toast.makeText(this, "Preencha email e senha.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         binding.btnLogin.setEnabled(false);
 
-        // Verifica as credenciais do administrador
         if (email.equals(ADMIN_EMAIL) && senha.equals(ADMIN_PASS)) {
             appSession.loginAdmin("Administrador");
             Toast.makeText(this, "Login como administrador!", Toast.LENGTH_SHORT).show();
@@ -69,44 +70,85 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // Executa a consulta numa Thread separada
+        // Primeiro tenta o login remoto (Supabase)
+        executor.execute(() -> {
+            Usuario usuarioRemoto = SupabaseService.autenticarUsuarioRemoto(email, senha);
+
+            runOnUiThread(() -> {
+                if (usuarioRemoto != null) {
+                    appSession.login(
+                            usuarioRemoto.getId(),
+                            usuarioRemoto.getNome(),
+                            usuarioRemoto.getEmail()
+                    );
+                    Toast.makeText(
+                            LoginActivity.this,
+                            "Seja bem-vindo(a), " + usuarioRemoto.getNome(),
+                            Toast.LENGTH_SHORT
+                    ).show();
+                    binding.btnLogin.setEnabled(true);
+                    direcionaActivity();
+                } else {
+                    // Fallback: login local (Room)
+                    autenticaLocal(email, senha);
+                }
+            });
+        });
+    }
+
+    private void autenticaLocal(String email, String senha) {
         executor.execute(() -> {
             try {
-                final Usuario usuario = usuarioDAO.getUsuarioByEmail(email);
+                final Usuario usuarioLocal = usuarioDAO.getUsuarioByEmail(email);
 
                 runOnUiThread(() -> {
                     binding.btnLogin.setEnabled(true);
 
-                    if (usuario != null) {
-                        if (usuario.autenticarEmail(email) &&
-                                SenhaUtils.verificarSenha(senha, usuario.getSenha())) {
+                    if (usuarioLocal != null
+                            && usuarioLocal.autenticarEmail(email)
+                            && SenhaUtils.verificarSenha(senha, usuarioLocal.getSenha())) {
 
-                            appSession.login(usuario.getId(), usuario.getNome(), usuario.getEmail());
-                            Toast.makeText(LoginActivity.this, "Login bem-sucedido!", Toast.LENGTH_SHORT).show();
-                            direcionaActivity();
-                        } else {
-                            Toast.makeText(LoginActivity.this, "Email ou senha incorretos!", Toast.LENGTH_SHORT).show();
-                        }
+                        appSession.login(
+                                usuarioLocal.getId(),
+                                usuarioLocal.getNome(),
+                                usuarioLocal.getEmail()
+                        );
+                        Toast.makeText(
+                                LoginActivity.this,
+                                "Login local bem-sucedido!",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                        direcionaActivity();
                     } else {
-                        Toast.makeText(LoginActivity.this, "Usuário não encontrado!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(
+                                LoginActivity.this,
+                                "Email ou senha incorretos!",
+                                Toast.LENGTH_SHORT
+                        ).show();
                     }
                 });
             } catch (Exception e) {
                 runOnUiThread(() -> {
                     binding.btnLogin.setEnabled(true);
-                    Toast.makeText(LoginActivity.this, "Erro ao fazer login: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(
+                            LoginActivity.this,
+                            "Erro ao fazer login local: " + e.getMessage(),
+                            Toast.LENGTH_SHORT
+                    ).show();
                 });
             }
         });
     }
 
     private void direcionaActivity() {
-        Intent intent;
-        if (appSession.isAdmin()) {
-            intent = new Intent(this, AdminActivity.class);
-        } else {
-            intent = new Intent(this, MainActivity.class);
-        }
+        Intent intent = appSession.isAdmin()
+                /*
+                 * Explorando opções de operadores ternários
+                 * if/else por: condicao ? valorVerdadeiro : valorFalso
+                 */
+                ? new Intent(this, AdminActivity.class)
+                : new Intent(this, MainActivity.class);
+
         startActivity(intent);
         finish();
     }
