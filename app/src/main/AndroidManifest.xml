@@ -5,8 +5,9 @@
     <!--Permissão para acessar a internet-->
     <uses-permission android:name="android.permission.INTERNET"/>
     <!--Permissão para verificar o estado da rede-->
-     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!--Permissão para acessp ao aarmazenamento externo-->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".session.AppSession"
@@ -19,12 +20,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Game"
         tools:targetApi="31">
+
         <activity
             android:name=".ui.activities.CadastroActivity"
             android:exported="true" />
         <activity
             android:name=".ui.activities.MainActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="unspecified"
+            tools:ignore="DiscouragedApi" />
+        <!--"unspecified" evita da Activity se reaplicar na tela com a mudança para o modo paisagem-->
         <activity
             android:name=".ui.activities.AdminActivity"
             android:exported="true" />

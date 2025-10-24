@@ -9,6 +9,7 @@
 
     <!-- Navigation Bar Lateral -->
     <LinearLayout
+        android:id="@+id/navBar"
         android:layout_width="80dp"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -88,7 +89,7 @@
     <!-- WebView -->
     <WebView
         android:id="@+id/webView"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:visibility = "gone"/>
