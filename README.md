@@ -1,9 +1,15 @@
+
+
+
 🎮🕹 The Cellar — Jogo de escolhas com múltiplos finais 
 
 The Cellar é um jogo narrativo baseado em escolhas, desenvolvido como Trabalho de Conclusão de Curso (TCC) do Curso Técnico em Informática Integrado ao Ensino Médio. A experiência se desenrola em uma ambientação sombria e fantástica, com personagens diferentes e muito interessados no mundo em que vivem.
+<hr>
+📲 Assim, <b>o aplicativo móvel serve como porta de entrada, um passaporte para o jogo em si, funcionando como painel de acesso seguro: após o cadastro e autenticação, o usuário é redirecionado para o site oficial onde o jogo acontece</b> – tendo como objetivo recuperar dados do jogador ao final daquela partida para dentro do app em forma de lista, permitindo que o jogador possa ter um retorno de sua própria gameplay. Por exemplo, tempo gasto, final alcançado, avaliação do jogo, entre outros dados relevantes que ainda estãos sendo discutidos entre os desenvolvedores.
 
-📲 Assim, o aplicativo móvel serve como porta de entrada, um passaporte para o jogo em si, funcionando como painel de acesso seguro: após o cadastro e autenticação, o usuário é redirecionado para o site oficial onde o jogo acontece – tendo como objetivo recuperar dados do jogador ao final daquela partida para dentro do app em forma de lista, permitindo que o jogador possa ter um retorno de sua própria gameplay. Por exemplo, tempo gasto, final alcançado, avaliação do jogo, entre outros dados relevantes que ainda estãos sendo discutidos entre os desenvolvedores.
+<h1>Veja-o em ação agora mesmo:  👇👇👇</h1><p>(https://thecellar.page.gd/)</p>
 
+<hr>
 👾 Características Principais
 
     Escolhas impactantes que definem o rumo da história
@@ -14,6 +20,7 @@ The Cellar é um jogo narrativo baseado em escolhas, desenvolvido como Trabalho 
 
     Ambiente imersivo repleto de mistérios, quebra-cabeças e consequências inesperadas
 
+<hr>
 📝 Funcionalidades do Aplicativo
 
     Cadastro e login com e-mail e senha criptografada
@@ -27,10 +34,12 @@ The Cellar é um jogo narrativo baseado em escolhas, desenvolvido como Trabalho 
     Botão de acesso ao jogo via Web (URL)
 
     Interface intuitiva com View Binding e RecyclerView
-
+    
+<hr>
 💡 Tecnologias Utilizadas
 
 Linguagens: Java, HTML, CSS, JavaScript Banco de Dados: SQLite via Room + Serviços do Supabase; Segurança: Criptografia de senha, validação com Regex; Versão Web: Integrada ao app via botão direcionador (WebView em andamento).
+<hr>
 
 🛠️ Público-Alvo
 
@@ -42,6 +51,7 @@ Jogadores que buscam:
 
     Experiência de tomada de decisão com impacto significativo
 
+<hr>
 🚀 Futuras Expansões
 
     Interface com WebView para melhor imersão no app
@@ -50,6 +60,7 @@ Jogadores que buscam:
 
     Estatísticas de decisões dos usuários
 
+<hr>
 📄 Licença
 
 Este projeto está sob a licença MIT.
