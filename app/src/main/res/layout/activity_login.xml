@@ -18,7 +18,7 @@
         android:shadowDy="2"
         android:shadowRadius="4"
         android:text="Faça Login para jogar!"
-        android:textColor="#004766"
+        android:textColor="#FFFFFF"
         android:textSize="25sp"
         android:textStyle="bold" />
 
