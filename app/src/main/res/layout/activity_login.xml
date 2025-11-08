@@ -9,60 +9,112 @@
     android:background="@drawable/gradient_background"
     tools:context=".ui.activities.LoginActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:shadowColor="#000000"
-        android:shadowDx="2"
-        android:shadowDy="2"
-        android:shadowRadius="4"
-        android:text="Faça Login para jogar!"
-        android:textColor="#FFFFFF"
-        android:textSize="25sp"
-        android:textStyle="bold" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+
+        <!-- Texto sobre a imagem -->
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:paddingBottom="70dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/icon_lanterna" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:layout_marginBottom="30dp"
+            android:fontFamily="@font/dungeon_quests_italic"
+            android:gravity="center"
+            android:shadowColor="#000000"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="6"
+            android:text="The Cellar"
+            android:textColor="#FFFFFFFF"
+            android:textSize="50sp" />
+    </FrameLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="-60dp"
         android:gravity="center"
         android:orientation="vertical">
 
         <EditText
             android:id="@+id/etEmail"
+            android:fontFamily="@font/lightning_dark"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:layout_marginBottom="10dp"
             android:background="#1F1F1F"
             android:hint="Email"
             android:inputType="textEmailAddress"
-            android:minHeight="50dp"
-            android:padding="14dp"
+            android:minHeight="30dp"
+            android:padding="15dp"
             android:textColor="#FFFFFF"
             android:textColorHint="#888888"
             android:textSize="16sp" />
 
         <EditText
             android:id="@+id/etSenha"
+            android:fontFamily="@font/lightning_dark"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="29dp"
             android:background="#1F1F1F"
             android:hint="Senha"
             android:inputType="textPassword"
             android:minHeight="50dp"
-            android:padding="14dp"
+            android:padding="15dp"
             android:textColor="#FFFFFF"
             android:textColorHint="#888888"
             android:textSize="16sp" />
 
         <Button
+            android:fontFamily="@font/munake"
             android:id="@+id/btnLogin"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
+            android:layout_marginTop="30dp"
             android:backgroundTint="#004766"
-            android:padding="14dp"
+            android:elevation="6dp"
+            android:padding="15dp"
             android:text="Entrar"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginTop="30dp">
+
+        <TextView
+            android:fontFamily="@font/munake"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="11dp"
+            android:text="Não possui conta? Cadastre-se já!"
+            android:textColor="#CCCCCC"
+            android:textSize="21sp" />
+
+        <Button
+            android:fontFamily="@font/munake"
+            android:id="@+id/btnCadastro"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#82121002"
+            android:padding="15dp"
+            android:text="Cadastrar-se"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
             android:elevation="6dp"/>
@@ -71,32 +123,5 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="70dp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:layout_marginTop="16dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="Não possui conta? Cadastre-se já!"
-            android:textColor="#CCCCCC"
-            android:textSize="16sp" />
-
-        <Button
-            android:id="@+id/btnCadastro"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#00320F"
-            android:padding="14dp"
-            android:text="Cadastrar-se"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:elevation="6dp"/>
-    </LinearLayout>
 
 </LinearLayout>
