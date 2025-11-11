@@ -109,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
     }
     //Do XML
     private void ocultarElementos() {
-        binding.navBar.setVisibility(View.GONE);
         binding.tvBemVindo.setVisibility(View.GONE);
         binding.btnEntrar.setVisibility(View.GONE);
         binding.btnSair.setVisibility(View.GONE);
