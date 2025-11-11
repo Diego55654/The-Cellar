@@ -14,13 +14,7 @@
         android:layout_height="200dp">
 
         <!-- Texto sobre a imagem -->
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"
-            android:paddingBottom="70dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/icon_lanterna" />
+
 
         <TextView
             android:layout_width="match_parent"
