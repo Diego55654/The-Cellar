@@ -5,83 +5,68 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:background="#000000"
-    android:padding="25dp">
+    android:background="@drawable/gradient_background" android:padding="25dp">
 
-    <!-- Título do Cadastro -->
     <TextView
-        android:layout_width="wrap_content"
+        android:fontFamily="@font/munake" android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="48dp"
         android:text="Cadastre-se"
         android:textColor="#FFFFFF"
         android:textSize="36sp"
-        android:textStyle="bold"
-        android:fontFamily="sans-serif-medium" />
+        android:textStyle="bold" />
 
-    <!-- Container dos campos -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingHorizontal="16dp">
 
-        <!-- Campo de Nome -->
         <EditText
             android:id="@+id/cadNome"
-            android:layout_width="match_parent"
+            android:fontFamily="@font/lightning_dark" android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:background="#222222"
-            android:hint="Nome"
+            android:background="#1F1F1F" android:hint="Nome"
             android:textColor="#FFFFFF"
-            android:textColorHint="#AAAAAA"
-            android:minHeight="48dp"
+            android:textColorHint="#888888" android:minHeight="48dp"
             android:padding="12dp"
             android:maxLines="1"
             android:textSize="16sp" />
 
-        <!-- Campo de Email -->
         <EditText
             android:id="@+id/cadEmail"
-            android:layout_width="match_parent"
+            android:fontFamily="@font/lightning_dark" android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:background="#222222"
-            android:hint="Email"
+            android:background="#1F1F1F" android:hint="Email"
             android:inputType="textEmailAddress"
             android:textColor="#FFFFFF"
-            android:textColorHint="#AAAAAA"
-            android:minHeight="48dp"
+            android:textColorHint="#888888" android:minHeight="48dp"
             android:padding="12dp"
             android:maxLines="1"
             android:textSize="16sp" />
 
-        <!-- Campo de Senha -->
         <EditText
             android:id="@+id/cadSenha"
-            android:layout_width="match_parent"
+            android:fontFamily="@font/lightning_dark" android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:background="#222222"
-            android:hint="Senha"
+            android:background="#1F1F1F" android:hint="Senha"
             android:inputType="textPassword"
             android:textColor="#FFFFFF"
-            android:textColorHint="#AAAAAA"
-            android:minHeight="48dp"
+            android:textColorHint="#888888" android:minHeight="48dp"
             android:padding="12dp"
             android:maxLines="1"
             android:textSize="16sp" />
 
-        <!-- Botão de Cadastro -->
         <Button
             android:id="@+id/btnCadastrar"
-            android:layout_width="match_parent"
+            android:fontFamily="@font/munake" android:layout_width="match_parent"
             android:layout_height="56dp"
             android:text="Criar Conta"
             android:textColor="#FFFFFF"
-            android:backgroundTint="#1A75BB"
-            android:textSize="18sp"
+            android:backgroundTint="#004766" android:textSize="18sp"
             android:layout_marginTop="16dp" />
     </LinearLayout>
 </LinearLayout>
