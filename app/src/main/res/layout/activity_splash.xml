@@ -10,7 +10,4 @@
         android:maxHeight="200dp"
         android:src="@mipmap/key_icon"
         android:scaleType="centerInside"/>
-
-
-
 </RelativeLayout>

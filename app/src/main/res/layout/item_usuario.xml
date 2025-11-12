@@ -41,6 +41,7 @@
             android:maxWidth="120dp"
             android:text="Editar"
             android:layout_marginEnd="8dp"
+            android:textColor="@color/white"
             android:backgroundTint="@color/black"
             tools:ignore="VisualLintButtonSize" />
 
@@ -51,6 +52,7 @@
             android:layout_weight="1"
             android:maxWidth="180dp"
             android:text="Excluir"
+            android:textColor="@color/white"
             android:backgroundTint="@color/black"
             tools:ignore="VisualLintButtonSize" />
     </LinearLayout>
