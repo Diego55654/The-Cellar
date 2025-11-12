@@ -25,12 +25,12 @@ public class AppSession extends Application {
     public void onCreate() {
         super.onCreate();
         preferences = getSharedPreferences(preferences_NAME, MODE_PRIVATE);
-        loadSession(); // Carrega os dados da sessão ao iniciar o app
+            loadSession(); // Carrega os dados da sessão ao iniciar o app
     }
 
     // Verifica se a sessão precisa ser reautenticada
     public boolean reautenticarSessao() {
-        return !isLoggedIn || (userId == null && !isAdmin);
+        return !isLoggedIn || (userId == null || isAdmin);
     }
 
     // Recupera sessão salva no SharedPreferences
