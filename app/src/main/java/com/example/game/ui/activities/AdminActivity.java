@@ -1,8 +1,8 @@
 package com.example.game.ui.activities;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -15,9 +15,6 @@ import com.example.game.databinding.ActivityAdminBinding;
 import com.example.game.models.Usuario;
 import com.example.game.recycler.UsuarioAdapter;
 import com.example.game.utils.SenhaUtils;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -218,33 +215,31 @@ public class AdminActivity extends AppCompatActivity {
                 usuarioEditado.setNome(nome);
                 usuarioEditado.setEmail(email);
 
-                // Verifica o campo antes de adicionar
                 if (!senha.isEmpty()) {
                     String senhaSegura = SenhaUtils.gerarSenhaSegura(senha);
                     usuarioEditado.setSenha(senhaSegura);
                 }
 
-                int codigo = SupabaseService.atualizarUsuarioPorId(idNecessario, usuarioEditado);
+                // Atualiza apenas no Supabase
+                Usuario atualizado = SupabaseService.atualizarUsuarioPorId(idNecessario, usuarioEditado);
 
-                if (codigo == 200 || codigo == 204) {
-                    db.usuarioDao().atualizarUsuario(usuarioEditado);
-                    runOnUiThread(() -> {
-                        carregarUsuarios();
+                runOnUiThread(() -> {
+                    if (atualizado != null) {
+                        carregarUsuarios(); // recarrega lista direto do Supabase
                         cancelarEdicao();
                         Toast.makeText(this,
                                 "Usuário atualizado com sucesso!",
                                 Toast.LENGTH_SHORT
                         ).show();
-                    });
-                } else {
-                    runOnUiThread(() -> {
+                    } else {
                         Toast.makeText(this,
-                                "Erro Supabase: " + codigo,
+                                "Erro ao atualizar no Supabase",
                                 Toast.LENGTH_SHORT
                         ).show();
                         reabilitarBotoes();
-                    });
-                }
+                    }
+                });
+
             } catch (Exception e) {
                 runOnUiThread(() -> {
                     Toast.makeText(this,
@@ -256,6 +251,28 @@ public class AdminActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    private void carregarUsuarios() {
+        executor.execute(() -> {
+            try {
+                List<Usuario> usuariosSupabase = SupabaseService.buscarUsuarios();
+                listaUsuarios.clear();
+                listaUsuarios.addAll(usuariosSupabase);
+
+                runOnUiThread(() -> usuarioAdapter.notifyDataSetChanged());
+            } catch (Exception e) {
+                runOnUiThread(() ->
+                        Toast.makeText(this,
+                                "Erro ao carregar usuários: " + e.getMessage(),
+                                Toast.LENGTH_SHORT
+                        ).show()
+                );
+            }
+        });
+    }
+
+
 
     private void cancelarEdicao() {
         usuarioExistente = null;
@@ -273,36 +290,6 @@ public class AdminActivity extends AppCompatActivity {
     private void reabilitarBotoes() {
         binding.btnAdicionarUsuario.setEnabled(true);
         binding.btnAtualizarUsuario.setEnabled(true);
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    private void carregarUsuarios() {
-        executor.execute(() -> {
-            String json = SupabaseService.listarUsuarios();
-            List<Usuario> usuarios = new ArrayList<>();
-
-            try {
-                JSONArray array = new JSONArray(json);
-                for (int i = 0; i < array.length(); i++) {
-                    JSONObject obj = array.getJSONObject(i);
-                    usuarios.add(new Usuario(
-                            obj.getInt("id"),
-                            obj.getString("nome"),
-                            obj.getString("email"),
-                            obj.getString("senha"),
-                            obj.optString("criado_em", null)
-                    ));
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            runOnUiThread(() -> {
-                listaUsuarios.clear();
-                listaUsuarios.addAll(usuarios);
-                usuarioAdapter.notifyDataSetChanged();
-            });
-        });
     }
 
     private void excluirUsuario(Usuario usuario) {

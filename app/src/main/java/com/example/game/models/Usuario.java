@@ -2,6 +2,8 @@ package com.example.game.models;
 
 import androidx.room.*;
 
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -115,6 +117,16 @@ public class Usuario {
                 + "\"senha\":\"" + senha + "\","
                 + "\"criado_em\":\"" + dataCriacao + "\""
                 + "}";
+    }
+    // Converte JSON vindo do Supabase em objeto Usuario
+    public static Usuario fromJson(JSONObject obj) {
+        int id = obj.optInt("id", 0);
+        String nome = obj.optString("nome", "");
+        String email = obj.optString("email", "");
+        String senha = obj.optString("senha", "");
+        String dataCriacao = obj.optString("criado_em", "");
+
+        return new Usuario(id, nome, email, senha, dataCriacao);
     }
 
     // Construtor para carregar usuários do banco remoto
