@@ -53,6 +53,7 @@
             android:minHeight="30dp"
             android:padding="15dp"
             android:textColor="#FFFFFF"
+            android:maxLines="1"
             android:textColorHint="#888888"
             android:textSize="16sp" />
 
@@ -69,6 +70,7 @@
             android:padding="15dp"
             android:textColor="#FFFFFF"
             android:textColorHint="#888888"
+            android:maxLines="1"
             android:textSize="16sp" />
 
         <Button
