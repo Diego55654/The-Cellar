@@ -5,12 +5,14 @@
     <uses-permission android:name="android.permission.INTERNET" /> <!-- Permissão para verificar o estado da rede -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- Permissão para acessp ao aarmazenamento externo -->
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACESS_WIFI_STATE"/>
 
 
 
     <application
         android:name=".session.AppSession"
         android:allowBackup="true"
+        android:usesCleartextTraffic="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/key_icon"
@@ -18,7 +20,8 @@
         android:roundIcon="@mipmap/key_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.Game"
-        tools:targetApi="31">
+        tools:targetApi="31"
+        android:networkSecurityConfig="@xml/network_security_config">
 
 
         <!--Tela de Splash-->
