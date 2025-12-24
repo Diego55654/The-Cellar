@@ -2,12 +2,12 @@ package com.example.game.ui.activities;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -33,6 +33,39 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void configurarWebView() {
+        WebView webView = binding.webView;
+        WebSettings settings = webView.getSettings();
+
+        // JavaScript
+        settings.setJavaScriptEnabled(true);
+
+        // Storage & Cache
+        settings.setDomStorageEnabled(true);
+        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        settings.setDatabaseEnabled(true);
+
+        // Mixed Content (HTTP + HTTPS)
+        settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+
+        // Allow File Access
+        settings.setAllowFileAccess(true);
+        settings.setAllowContentAccess(true);
+
+        // View Settings
+        settings.setUseWideViewPort(true);
+        settings.setLoadWithOverviewMode(true);
+        settings.setBuiltInZoomControls(false);
+        settings.setDisplayZoomControls(false);
+
+        // Critical for External APIs
+        settings.setAllowUniversalAccessFromFileURLs(true);
+        settings.setAllowFileAccessFromFileURLs(true);
+
+        webView.setWebViewClient(new WebViewClient());
+        webView.setWebChromeClient(new WebChromeClient());
+        WebView.setWebContentsDebuggingEnabled(true);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,23 +73,8 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(binding.getRoot());
 
-        WebView webView = binding.webView;
-
-        // WebView CONFIGURAÇÕES
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setDomStorageEnabled(true);
-        webView.getSettings().setUseWideViewPort(true);
-        webView.getSettings().setLoadWithOverviewMode(true);
-        webView.getSettings().setBuiltInZoomControls(false);
-        webView.getSettings().setDisplayZoomControls(false);
-        webView.setWebViewClient(new WebViewClient());
-        webView.setWebChromeClient(new WebChromeClient());
-        WebView.setWebContentsDebuggingEnabled(true);
-
-        webView.getSettings().setUseWideViewPort(true);
-        webView.getSettings().setLoadWithOverviewMode(true);
-
-
+        configurarWebView();
+ 
         appSession = (AppSession) getApplication();
 
         if (appSession == null || !appSession.isLoggedIn()) {
@@ -65,8 +83,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             setupUserInterface();
         }
-
-
 
         binding.btnEntrar.setOnClickListener(view -> {
 
@@ -82,9 +98,8 @@ public class MainActivity extends AppCompatActivity {
                 new Handler().postDelayed(() -> {
                     iniciarJogo();
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
-                    }, 500); // 500ms
-            } else {
-                iniciarJogo();
+
+                    }, 1000); // 1000ms
             }
         });
 
@@ -135,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus && binding.webView.getVisibility() == View.VISIBLE) {
-            iniciarJogo();
+            //iniciarJogo(); MOTIVO DO GAME FICAR RESETANDO
             ModoImersivo();
         }
     }
